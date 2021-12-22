@@ -72,61 +72,46 @@ font-2 = Material Design Icons:style=Bold:size=9;3
 font-3 = unifont:fontformat=truetype:size=9:antialias=true;
 
 
-; [module/workspaces]
-; type = internal/xworkspaces
-; pin-workspaces = true
-; enable-click = true
-; enable-scroll = true
-; format-padding = 0
+; font-4 = NotoSans-Regular:size=9;0
+; font-5 = Material\ Icons:size=11;2
+; font-6 = xos4\ Terminus:size=14;0
+; font-7 = Siji:pixelsize=11;1
+; font-8 = FontAwesome:size=11;0
 
-; icon-0 =  ; 
-; icon-1 =  ; 
-; icon-2 =  ; 
-; icon-3 =  ; 
-; icon-4 =  ; 
+pseudo-transparency = true
 
-; icon-default = 
+[module/i3]
+type = internal/i3
+format = <label-state> <label-mode>
+index-sort = true
+wrapping-scroll = false
 
-; format = <label-state>
-; format-background = #282c34
-; label-active = %name%
-; label-occupied = %name%
-; label-urgent = %icon%
-; label-empty = %name%
+; Only show workspaces on the same output as the bar
+;pin-workspaces = true
 
-; label-occupied-padding = 1
-; label-empty-padding = 1
-; label-urgent-padding = 1
-; label-active-padding = 1
-
-; label-active-foreground =  #d47d85
-; label-occupied-foreground = #a2a8b5
-; label-empty-foreground =  #6f737b
-
-
-
-; [module/i3]
-; type = internal/i3
-; format = <label-state> <label-mode>
-; index-sort = true
-; wrapping-scroll = false
-
-; ; Only show workspaces on the same output as the bar
-; ;pin-workspaces = true
-
-; label-mode-padding = 2
-; label-mode-foreground = #000
-; label-mode-background = ${colors.primary}
+label-mode-padding = 2
+label-mode-foreground = #282c34
+label-mode-background = #282c34
 
 ; ; focused = Active workspace on focused monitor
-; label-focused = %index%
-; label-focused-background = ${colors.background-alt}
-; label-focused-underline= ${colors.primary}
-; label-focused-padding = 2
+label-focused = %index%
+label-focused-background = #565c64
+; label-focused-underline = #be5046
+label-focused-padding = 2
 
-; ; unfocused = Inactive workspace on any monitor
-; label-unfocused = %index%
-; label-unfocused-padding = 2
+fuzzy-match = true
+ws-icon-0 = 1;
+ws-icon-1 = 2;
+ws-icon-2 = 3;
+ws-icon-3 = 4;
+ws-icon-4 = 5;
+ws-icon-default = 
+
+; unfocused = Inactive workspace on any monitor
+label-unfocused = %index%
+label-unfocused-padding = 2
+label-unfocused-background = #282c34
+
 
 ; ; visible = Active workspace on unfocused monitor
 ; label-visible = %index%
@@ -134,108 +119,13 @@ font-3 = unifont:fontformat=truetype:size=9:antialias=true;
 ; label-visible-underline = ${self.label-focused-underline}
 ; label-visible-padding = ${self.label-focused-padding}
 
-; ; urgent = Workspace with urgency hint set
-; label-urgent = %index%
-; label-urgent-background = ${colors.alert}
-; label-urgent-padding = 2
+; urgent = Workspace with urgency hint set
+label-urgent = %index%
+label-urgent-background = #be5046
+label-urgent-padding = 2
 
-; ; Separator in between workspaces
-; ; label-separator = |
-
-
-; ws-icon-0 = "1;"
-; ;ws-icon-0 = "1;Web"
-; ws-icon-1 = "2;Slack"
-; ws-icon-2 = "3;Tg"
-; ws-icon-3 = "6;Web"
-; ws-icon-4 = "7;IDEA"
-; ws-icon-5 = "0;Sql"
-; ws-icon-6 = "8;Term"
-; ws-icon-default = 
-
-
-
-[module/i3]
-type = internal/i3
-
-pin-workspaces = true
-strip-wsnumbers = true
-index-sort = true
-
-; Use fuzzy (partial) matching on labels when assigning 
-; icons to workspaces
-; Example: code;♚ will apply the icon to all workspaces 
-; containing 'code' in the label
-; Default: false
-; fuzzy-match = true
-
-ws-icon-0 = 1;
-ws-icon-1 = 2;
-ws-icon-2 = 3;
-ws-icon-3 = 4;
-ws-icon-4 = 5;
-ws-icon-default = 
-
-; label-dimmed-underline = ${root.background}
-
-; Available tags:
-;   <label-state> (default) - gets replaced with <label-(focused|unfocused|visible|urgent)>
-;   <label-mode> (default)
-format = <label-state> <label-mode>
-
-; Available tokens:
-;   %mode%
-; Default: %mode%
-label-mode = %mode%
-label-mode-padding = 0
-label-mode-background = #e60053
-
-; ; Available tokens:
-; ;   %name%
-; ;   %icon%
-; ;   %index%
-; ;   %output%
-; ; Default: %icon%  %name%
-; label-focused =  %index%
-; label-focused-foreground = #ffffff
-; label-focused-background = #3f3f3f
-; label-focused-underline = #fba922
-; label-focused-padding = 4
-
-; ; Available tokens:
-; ;   %name%
-; ;   %icon%
-; ;   %index%
-; ;   %output%
-; ; Default: %icon%  %name%
-; label-unfocused = %index%
-; label-unfocused-padding = 4
-
-; ; Available tokens:
-; ;   %name%
-; ;   %icon%
-; ;   %index%
-; ;   %output%
-; ; Default: %icon%  %name%
-; label-visible = %index%
-; label-visible-underline = #555555
-; label-visible-padding = 4
-
-; ; Available tokens:
-; ;   %name%
-; ;   %icon%
-; ;   %index%
-; ;   %output%
-; ; Default: %icon%  %name%
-; label-urgent = %index%
-; label-urgent-foreground = #000000
-; label-urgent-background = #bd2c40
-; label-urgent-padding = 4
-
-; ; Separator in between workspaces
-; label-separator = |
-; label-separator-padding = 0
-; label-separator-foreground = #ffb52a
+; Separator in between workspaces
+label-separator = 
 
 
 
