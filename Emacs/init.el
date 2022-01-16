@@ -20,7 +20,12 @@
 (setq-default cursor-type 'bar) 
 (setq inhibit-startup-message t)
 (setq ring-bell-function 'ignore)
+(setq create-lockfiles nil)
 (defalias 'yes-or-no-p 'y-or-n-p)
+(setq help-window-select t)
+
+(setq-default indent-tabs-mode nil)
+(setq-default tab-width 2)
 
 ;; UTF-8
 (prefer-coding-system 'utf-8)
@@ -59,6 +64,21 @@
   (add-hook mode (lambda () (display-line-numbers-mode 0))))
 
 
+;; The default is 800 kilobytes.  Measured in bytes.
+(setq gc-cons-threshold (* 50 1000 1000))
+
+;; Profile emacs startup
+(add-hook 'emacs-startup-hook
+          (lambda ()
+            (message "*** Emacs loaded in %s with %d garbage collections."
+                     (format "%.2f seconds"
+                             (float-time
+                              (time-subtract after-init-time before-init-time)))
+                     gcs-done)))
+
+
+
+
 ;; Aqui o Straigth el que funciona que nem o Package do Melpa
 (defvar bootstrap-version)
 (let ((bootstrap-file
@@ -72,6 +92,15 @@
       (goto-char (point-max))
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
+
+;; Always use straight to install on systems other than Linux
+(setq straight-use-package-by-default (not (eq system-type 'gnu/linux)))
+
+;; Use straight.el for use-package expressions
+(straight-use-package 'use-package)
+
+;; Load the helper package for commands like `straight-x-clean-unused-repos'
+(require 'straight-x)
 
 
 ;; Aqui o Package com o Melpa normal 
@@ -105,6 +134,10 @@
 ;;    :stable nil))
 ;; (require 'quelpa-use-package)
 
+
+(push "~/.dotfiles/.emacs.d/lisp" load-path)
+
+
 (straight-use-package
  '(nano-emacs :type git :host github :repo "rougier/nano-emacs"))
 
@@ -128,9 +161,16 @@
 
 
 ;; Pacotes começam aqui !!
+;; (use-package which-key
+;;   :ensure t
+;;   :config (which-key-mode))
+
 (use-package which-key
-  :ensure t
-  :config (which-key-mode))
+  :init (which-key-mode)
+  :diminish which-key-mode
+  :config
+  (setq which-key-idle-delay 0.3))
+
 
 (use-package auto-complete
   :ensure t
@@ -151,10 +191,6 @@
   :ensure t
   :init
   (minions-mode))
-
-
-;; (use-package neotree
-;;   :ensure t)
 
 ;; (setq neo-theme 'arrow)
 ;; (setq-default neo-show-hidden-files t)
@@ -202,7 +238,8 @@
 
 (use-package yasnippet-snippets
   :ensure t
-  :after (yasnippet))
+  :after (yasnippet)
+  :config (yas-global-mode 1))
 
 (use-package highlight-thing
   :ensure t
@@ -221,13 +258,23 @@
   :config
     (add-hook 'prog-mode-hook 'smartparens-mode))
 
-(use-package rainbow-delimiters
-    :ensure t
-    :config
-    (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
+;; (use-package rainbow-delimiters
+;;     :ensure t
+;;     :config
+;;     (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
 
+(use-package rainbow-delimiters
+  :init
+  (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
+  (add-hook 'geiser-repl-mode-hook 'rainbow-delimiters-mode)
+  (add-hook 'cider-repl-mode-hook 'rainbow-delimiters-mode))
 
 ;; Linguagens aqui   
+
+;;; C/C++
+(use-package cmake-ide
+  :init (use-package rtags)
+  :config (cmake-ide-setup))
 
 (use-package frontside-javascript
   :init (frontside-javascript))
@@ -280,6 +327,9 @@
     :config
     (global-git-gutter-mode 't))
 
+;; Teclado & Teclas
+
+
 
 ;; ;; Ergoemacs aqui 
 ;; (use-package ergoemacs-mode
@@ -289,6 +339,85 @@
 ;;     (setq ergoemacs-theme nil) ;; Uses Standard Ergoemacs keyboard theme
 ;;     (setq ergoemacs-keyboard-layout "us") ;; Assumes QWERTY keyboard layout
 ;;     (ergoemacs-mode 1)))
+
+;; (use-package god-mode
+;;     :disabled
+;;     :bind (("<escape>" . god-local-mode)
+;;            ("C-x C-1" . delete-other-windows)
+;;            ("C-x C-2" . split-window-below)
+;;            ("C-x C-3" . split-window-right)
+;;            ("C-x C-0" . delete-window)))
+
+(defun dw/evil-hook ()
+  (dolist (mode '(custom-mode
+                  eshell-mode
+                  git-rebase-mode
+                  erc-mode
+                  circe-server-mode
+                  circe-chat-mode
+                  circe-query-mode
+                  sauron-mode
+                  term-mode))
+  (add-to-list 'evil-emacs-state-modes mode)))
+
+(defun dw/dont-arrow-me-bro ()
+  (interactive)
+  (message "Arrow keys are bad, you know?"))
+
+(use-package undo-tree
+  :init
+  (global-undo-tree-mode 1))
+
+
+;; Let's Be Evil !!! 
+ 
+(use-package evil
+  :init
+  (setq evil-want-integration t)
+  (setq evil-want-keybinding nil)
+  (setq evil-want-C-u-scroll t)
+  (setq evil-want-C-i-jump nil)
+  (setq evil-respect-visual-line-mode t)
+  (setq evil-undo-system 'undo-tree)
+  :config
+  (add-hook 'evil-mode-hook 'dw/evil-hook)
+  (evil-mode 1)
+  (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
+  (define-key evil-insert-state-map (kbd "C-h") 'evil-delete-backward-char-and-join)
+
+  ;; Use visual line motions even outside of visual-line-mode buffers
+  (evil-global-set-key 'motion "j" 'evil-next-visual-line)
+  (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
+
+  (unless dw/is-termux
+    ;; Disable arrow keys in normal and visual modes
+    (define-key evil-normal-state-map (kbd "<left>") 'dw/dont-arrow-me-bro)
+    (define-key evil-normal-state-map (kbd "<right>") 'dw/dont-arrow-me-bro)
+    (define-key evil-normal-state-map (kbd "<down>") 'dw/dont-arrow-me-bro)
+    (define-key evil-normal-state-map (kbd "<up>") 'dw/dont-arrow-me-bro)
+    (evil-global-set-key 'motion (kbd "<left>") 'dw/dont-arrow-me-bro)
+    (evil-global-set-key 'motion (kbd "<right>") 'dw/dont-arrow-me-bro)
+    (evil-global-set-key 'motion (kbd "<down>") 'dw/dont-arrow-me-bro)
+    (evil-global-set-key 'motion (kbd "<up>") 'dw/dont-arrow-me-bro))
+
+  (evil-set-initial-state 'messages-buffer-mode 'normal)
+  (evil-set-initial-state 'dashboard-mode 'normal))
+
+(use-package evil-collection
+  :after evil
+  :init
+  (setq evil-collection-company-use-tng nil)  ;; Is this a bug in evil-collection?
+  :custom
+  (evil-collection-outline-bind-tab-p nil)
+  :config
+  (setq evil-collection-mode-list
+        (remove 'lispy evil-collection-mode-list))
+  (evil-collection-init))
+
+
+
+
+
 
 ;; Outro tema do Emacs 
 ;; Pra usa-lo primeiro e preciso desabilitar o nano-emacs la em cima
@@ -357,13 +486,20 @@
 ;; Atalhos proprios 
 
 (global-set-key  (kbd "C-<tab>") 'other-window)
-(global-set-key  (kbd "M-<up>") 'enlarge-window)
-(global-set-key  (kbd "M-<down>") 'shrink-window)
-(global-set-key  (kbd "M-<left>") 'enlarge-window-horizontally)
-(global-set-key  (kbd "M-<right>") 'shrink-window-horizontally)
+;; (global-set-key  (kbd "M-<up>") 'enlarge-window)
+;; (global-set-key  (kbd "M-<down>") 'shrink-window)
+;; (global-set-key  (kbd "M-<left>") 'enlarge-window-horizontally)
+;; (global-set-key  (kbd "M-<right>") 'shrink-window-horizontally)
+
+(global-set-key (kbd "<C-up>") 'shrink-window)
+(global-set-key (kbd "<C-down>") 'enlarge-window)
+(global-set-key (kbd "<C-left>") 'shrink-window-horizontally)
+(global-set-key (kbd "<C-right>") 'enlarge-window-horizontally)
+
+(global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 
 (global-set-key (kbd "M-o") 'ace-window)
-(global-set-key (kbd "C-b") 'neotree-toggle)
+(global-set-key (kbd "C-x b") 'neotree-toggle)
 
 
 (custom-set-variables
