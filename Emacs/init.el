@@ -66,6 +66,15 @@
 (delete-selection-mode 1)
 (global-subword-mode 1)
 
+
+;; Highlight whitespace.
+(setq whitespace-line-column fill-column)
+(setq whitespace-style
+      '(face lines-tail trailing tabs empty))
+(global-whitespace-mode +1)
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
+
+
 ;; Disable line numbers for some modes
 (dolist (mode '(org-mode-hook
                 term-mode-hook
@@ -157,26 +166,26 @@
 
 
 
-(straight-use-package
- '(nano-emacs :type git :host github :repo "rougier/nano-emacs"))
+;; (straight-use-package
+;;  '(nano-emacs :type git :host github :repo "rougier/nano-emacs"))
 
-(require 'nano-theme-dark)
+;; (require 'nano-theme-dark)
 
-(require 'nano-faces)
-(nano-faces)
+;; (require 'nano-faces)
+;; (nano-faces)
 
-(require 'nano-theme)
-(nano-theme)
+;; (require 'nano-theme)
+;; (nano-theme)
 
-;; Nano header & mode lines
-(require 'nano-modeline)
+;; ;; Nano header & mode lines
+;; (require 'nano-modeline)
 
-;; Welcome message
-(let ((inhibit-message t))
-  (message "Welcome to GNU Emacs / N Λ N O edition")
-  (message (format "Initialization time: %s" (emacs-init-time))))
+;; ;; Welcome message
+;; (let ((inhibit-message t))
+;;   (message "Welcome to GNU Emacs / N Λ N O edition")
+;;   (message (format "Initialization time: %s" (emacs-init-time))))
 
-(require 'nano-splash)
+;; (require 'nano-splash)
 
 
 ;; Pacotes começam aqui !!
@@ -724,23 +733,23 @@
 ;; ;; kaolin-valley-light - light variant of kaolin-valley theme.
 
 
-;; (use-package doom-themes
-;;   :ensure t
-;;   :config
-;;   ;; Global settings (defaults)
-;;   (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
-;;         doom-themes-enable-italic t) ; if nil, italics is universally disabled
-;;   (load-theme 'doom-monokai-machine t)
+(use-package doom-themes
+  :ensure t
+  :config
+  ;; Global settings (defaults)
+  (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
+        doom-themes-enable-italic t) ; if nil, italics is universally disabled
+  (load-theme 'doom-one t)
 
-;;   ;; Enable flashing mode-line on errors
-;;   (doom-themes-visual-bell-config)
-;;   ;; Enable custom neotree theme (all-the-icons must be installed!)
-;;   (doom-themes-neotree-config)
-;;   ;; or for treemacs users
-;;   (setq doom-themes-treemacs-theme "doom-monokai-pro") ; use "doom-colors" for less minimal icon theme
-;;   (doom-themes-treemacs-config)
-;;   ;; Corrects (and improves) org-mode's native fontification.
-;;   (doom-themes-org-config))
+  ;; Enable flashing mode-line on errors
+  (doom-themes-visual-bell-config)
+  ;; Enable custom neotree theme (all-the-icons must be installed!)
+  (doom-themes-neotree-config)
+  ;; or for treemacs users
+  (setq doom-themes-treemacs-theme "doom-monokai-pro") ; use "doom-colors" for less minimal icon theme
+  (doom-themes-treemacs-config)
+  ;; Corrects (and improves) org-mode's native fontification.
+  (doom-themes-org-config))
 
 ;; ;; Name	                                   Description
 ;; ;; doom-one	                               Flagship theme based on atom One Dark
@@ -810,35 +819,35 @@
 
 
 ;; ;; ;; From melpa, M-x package-install RET doom-modeline RET.
-;; (use-package doom-modeline
-;;   :ensure t
-;;   :init (doom-modeline-mode 1))
+(use-package doom-modeline
+  :ensure t
+  :init (doom-modeline-mode 1))
 
-;; (setq doom-modeline-icon (display-graphic-p))
-;; (setq doom-modeline-major-mode-icon t)
-;; (setq doom-modeline-major-mode-color-icon t)
-;; (setq doom-modeline-buffer-state-icon t)
-;; (setq doom-modeline-buffer-modification-icon t)
-;; (setq doom-modeline-minor-modes nil)
-;; (setq doom-modeline-github-interval (* 30 60))
+(setq doom-modeline-icon (display-graphic-p))
+(setq doom-modeline-major-mode-icon t)
+(setq doom-modeline-major-mode-color-icon t)
+(setq doom-modeline-buffer-state-icon t)
+(setq doom-modeline-buffer-modification-icon t)
+(setq doom-modeline-minor-modes nil)
+(setq doom-modeline-github-interval (* 30 60))
 
-;; ;; Whether display the environment version.
-;; (setq doom-modeline-env-version t)
-;; ;; Or for individual languages
-;; (setq doom-modeline-env-enable-python t)
-;; (setq doom-modeline-env-enable-ruby t)
-;; (setq doom-modeline-env-enable-perl t)
-;; (setq doom-modeline-env-enable-go t)
-;; (setq doom-modeline-env-enable-elixir t)
-;; (setq doom-modeline-env-enable-rust t)
+;; Whether display the environment version.
+(setq doom-modeline-env-version t)
+;; Or for individual languages
+(setq doom-modeline-env-enable-python t)
+(setq doom-modeline-env-enable-ruby t)
+(setq doom-modeline-env-enable-perl t)
+(setq doom-modeline-env-enable-go t)
+(setq doom-modeline-env-enable-elixir t)
+(setq doom-modeline-env-enable-rust t)
 
-;; ;; Change the executables to use for the language version string
-;; (setq doom-modeline-env-python-executable "python") ; or `python-shell-interpreter'
-;; (setq doom-modeline-env-ruby-executable "ruby")
-;; (setq doom-modeline-env-perl-executable "perl")
-;; (setq doom-modeline-env-go-executable "go")
-;; (setq doom-modeline-env-elixir-executable "iex")
-;; (setq doom-modeline-env-rust-executable "rustc")
+;; Change the executables to use for the language version string
+(setq doom-modeline-env-python-executable "python") ; or `python-shell-interpreter'
+(setq doom-modeline-env-ruby-executable "ruby")
+(setq doom-modeline-env-perl-executable "perl")
+(setq doom-modeline-env-go-executable "go")
+(setq doom-modeline-env-elixir-executable "iex")
+(setq doom-modeline-env-rust-executable "rustc")
 
 ;; ;; Alternativa para a mode-line do Doom-emacs
 ;; (use-package spaceline
@@ -852,6 +861,55 @@
 
 ;; Atalhos proprios 
 
+  ;; Lista: original Emacs teclas !!!
+  ;;   ("C-x o" other-window)
+  ;;   ("C-b" backward-char)
+  ;;   ("C-f" forward-char)
+  ;;   ("M-b" backward-word)
+  ;;   ("M-f" foward-word)
+  ;;   ("C-p" previous-line)
+  ;;   ("C-n" next-line)
+  ;;   ("M-s o" occur)
+  ;;   ("C-SPC" set-mark-command)
+  ;;   ("DEL" delete-backward-char)
+  ;;   ("C-d" delete-char )
+  ;;   ("M-d" kill-word)
+  ;;   ("M-DEL" backward-kill-word)
+  ;;   ("M-{" backward-paragraph)
+  ;;   ("M-}" forward-paragraph)
+  ;;   ("M-{" ergoemacs-backward-block)
+  ;;   ("M-}" ergoemacs-forward-block)
+  ;;   ("C-e" ergoemacs-end-of-line-or-what)
+  ;;   ("C-a" ergoemacs-beginning-of-line-or-what)
+  ;;   ("C-e" ergoemacs-end-of-line-or-what)
+  ;;   ("C-a" move-beginning-of-line)
+  ;;   ("C-e" move-end-of-line)
+  ;;   ("C-v" scroll-down-command)
+  ;;   ("M-v" scroll-up-command)
+  ;;   ("<begin>" beginning-of-buffer)
+  ;;   ("<C-end>" end-of-buffer)
+  ;;   ("C-M-b" ergoemacs-backward-open-bracket)
+  ;;   ("C-M-f" ergoemacs-backward-open-bracket)
+  ;;   ("M-w" ergoemacs-copy-line-or-region)
+  ;;   ("C-y" ergoemacs-paste)
+  ;;   ("M-y" ergoemacs-paste-cycle)
+  ;;   ("C-_" ergoemacs-undo)
+  ;;   ;("C-/" ergoemacs-undo)
+  ;;   ("M-%" query-replace)
+  ;;   ("C-s" isearch-forward)
+  ;;   ("C-M-s" isearch-forward-regexp)
+  ;;   ("C-r" isearch-backward)
+  ;;   ("C-M-r" isearch-backward-regexp)
+  ;;   ("C-x 1" delete-other-windows)
+  ;;   ("C-x 0" delete-window)
+  ;;   ("C-x 2" split-window-below)
+  ;;   ("C-x 3" split-window-right)
+  ;;   ("C-x b" switch-to-buffer)
+  ;;   ("C-x C-b" ibuffer)
+  ;;   ("C-x C-b" execute-extended-command)
+  ;;   ("C-k" kill-line)
+  ;;   ("M-TAB" ergoemacs-call-keyword-completion)
+
 (global-set-key  (kbd "C-<tab>") 'other-window)
 (global-set-key (kbd "<C-up>") 'shrink-window)
 (global-set-key (kbd "<C-down>") 'enlarge-window)
@@ -863,6 +921,24 @@
 (global-set-key (kbd "M-o") 'ace-window)
 
 (global-set-key (kbd "M-<tab>") 'transpose-frame)
+
+;; ;; C-z to 'undo, the default is C-/.
+;; (global-unset-key "\C-z")
+;; (global-set-key "\C-z" 'undo)
+
+;; ;; Enabling control-c and control-v copy and paste
+
+;; (global-unset-key "\C-c")
+;; (global-set-key (kbd "C-c") 'undefined)
+;; (global-set-key (kbd "C-c") 'kill-ring-save)
+;; (global-set-key (kbd "C-v") 'yank)
+
+(global-set-key (kbd "<f12>") 'next-buffer)
+(global-set-key (kbd "<f11>") 'previous-buffer)
+
+(cua-mode)
+(require 'iso-transl)
+
 
 
 (custom-set-variables
