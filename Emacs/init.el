@@ -19,7 +19,7 @@
 (global-display-line-numbers-mode t)
 (display-time-mode 1)
 (setq use-package-compute-statistics t)
-(global-hl-line-mode 1)
+;; (global-hl-line-mode 1)
 (setq-default cursor-type 'bar) 
 (setq inhibit-startup-message t)
 (setq ring-bell-function 'ignore)
@@ -51,14 +51,14 @@
 (setq read-file-name-completion-ignore-case t)
 ;; (defvar my/font-family "Iosevka")
 
-;; Make frame transparency overridable
-(defvar efs/frame-transparency '(90 . 90))
+;; ;; Make frame transparency overridable
+;; (defvar efs/frame-transparency '(90 . 90))
 
-;; Set frame transparency
-(set-frame-parameter (selected-frame) 'alpha efs/frame-transparency)
-(add-to-list 'default-frame-alist `(alpha . ,efs/frame-transparency))
-(set-frame-parameter (selected-frame) 'fullscreen 'maximized)
-(add-to-list 'default-frame-alist '(fullscreen . maximized))
+;; ;; Set frame transparency
+;; (set-frame-parameter (selected-frame) 'alpha efs/frame-transparency)
+;; (add-to-list 'default-frame-alist `(alpha . ,efs/frame-transparency))
+;; (set-frame-parameter (selected-frame) 'fullscreen 'maximized)
+;; (add-to-list 'default-frame-alist '(fullscreen . maximized))
 
 ;; Global minor modes
 (setq column-number-mode t)
@@ -228,6 +228,9 @@
   :ensure t
   :init
   (minions-mode))
+
+(use-package evil-nerd-commenter
+  :bind ("M-/" . evilnc-comment-or-uncomment-lines))
 
 ;; (setq neo-theme 'arrow)
 ;; (setq-default neo-show-hidden-files t)
@@ -554,8 +557,6 @@
 ;;         (remove 'lispy evil-collection-mode-list))
 ;;   (evil-collection-init))
 
-;; (use-package evil-nerd-commenter
-;;   :bind ("M-/" . evilnc-comment-or-uncomment-lines))
 
 ;; (use-package general
 ;;   :config
@@ -714,6 +715,20 @@
 ;; Pra usa-lo primeiro e preciso desabilitar o nano-emacs la em cima
 ;; Comente as linhas do nano-emacs e descomente essas aqui
 
+(use-package gruvbox-theme
+  :config
+  (load-theme 'gruvbox-dark-hard t))
+
+;; ;; Lista de temas Gruvbox
+;; gruvbox
+;; gruvbox-dark-medium
+;; gruvbox-dark-soft
+;; gruvbox-dark-hard
+;; gruvbox-light-medium
+;; gruvbox-light-soft
+;; gruvbox-light-hard
+
+
 ;; ;; Temas do Emacs : O kaolin oferece muitos temas
 ;; (use-package kaolin-themes
 ;;   :config
@@ -733,23 +748,23 @@
 ;; ;; kaolin-valley-light - light variant of kaolin-valley theme.
 
 
-(use-package doom-themes
-  :ensure t
-  :config
-  ;; Global settings (defaults)
-  (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
-        doom-themes-enable-italic t) ; if nil, italics is universally disabled
-  (load-theme 'doom-dark+ t)
+;; (use-package doom-themes
+;;   :ensure t
+;;   :config
+;;   ;; Global settings (defaults)
+;;   (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
+;;         doom-themes-enable-italic t) ; if nil, italics is universally disabled
+;;   (load-theme 'doom-dark+ t)
 
-  ;; Enable flashing mode-line on errors
-  (doom-themes-visual-bell-config)
-  ;; Enable custom neotree theme (all-the-icons must be installed!)
-  (doom-themes-neotree-config)
-  ;; or for treemacs users
-  (setq doom-themes-treemacs-theme "doom-monokai-pro") ; use "doom-colors" for less minimal icon theme
-  (doom-themes-treemacs-config)
-  ;; Corrects (and improves) org-mode's native fontification.
-  (doom-themes-org-config))
+;;   ;; Enable flashing mode-line on errors
+;;   (doom-themes-visual-bell-config)
+;;   ;; Enable custom neotree theme (all-the-icons must be installed!)
+;;   (doom-themes-neotree-config)
+;;   ;; or for treemacs users
+;;   (setq doom-themes-treemacs-theme "doom-monokai-pro") ; use "doom-colors" for less minimal icon theme
+;;   (doom-themes-treemacs-config)
+;;   ;; Corrects (and improves) org-mode's native fontification.
+;;   (doom-themes-org-config))
 
 ;; ;; Name	                                   Description
 ;; ;; doom-one	                               Flagship theme based on atom One Dark
@@ -818,7 +833,7 @@
 ;; ;; doom-zenburn	                           port of the popular Zenburn theme (thanks to jsoa)
 
 
-;; ;; ;; From melpa, M-x package-install RET doom-modeline RET.
+;; ;; From melpa, M-x package-install RET doom-modeline RET.
 (use-package doom-modeline
   :ensure t
   :init (doom-modeline-mode 1))
