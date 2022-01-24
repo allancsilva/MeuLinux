@@ -166,26 +166,26 @@
 
 
 
-;; (straight-use-package
-;;  '(nano-emacs :type git :host github :repo "rougier/nano-emacs"))
+(straight-use-package
+ '(nano-emacs :type git :host github :repo "rougier/nano-emacs"))
 
-;; (require 'nano-theme-dark)
+(require 'nano-theme-dark)
 
-;; (require 'nano-faces)
-;; (nano-faces)
+(require 'nano-faces)
+(nano-faces)
 
-;; (require 'nano-theme)
-;; (nano-theme)
+(require 'nano-theme)
+(nano-theme)
 
-;; ;; Nano header & mode lines
-;; (require 'nano-modeline)
+;; Nano header & mode lines
+(require 'nano-modeline)
 
-;; ;; Welcome message
-;; (let ((inhibit-message t))
-;;   (message "Welcome to GNU Emacs / N Λ N O edition")
-;;   (message (format "Initialization time: %s" (emacs-init-time))))
+;; Welcome message
+(let ((inhibit-message t))
+  (message "Welcome to GNU Emacs / N Λ N O edition")
+  (message (format "Initialization time: %s" (emacs-init-time))))
 
-;; (require 'nano-splash)
+(require 'nano-splash)
 
 
 ;; Pacotes começam aqui !!
@@ -715,9 +715,9 @@
 ;; Pra usa-lo primeiro e preciso desabilitar o nano-emacs la em cima
 ;; Comente as linhas do nano-emacs e descomente essas aqui
 
-(use-package gruvbox-theme
-  :config
-  (load-theme 'gruvbox-dark-hard t))
+; (use-package gruvbox-theme
+;   :config
+;   (load-theme 'gruvbox-dark-hard t))
 
 ;; ;; Lista de temas Gruvbox
 ;; gruvbox
@@ -834,35 +834,35 @@
 
 
 ;; ;; From melpa, M-x package-install RET doom-modeline RET.
-(use-package doom-modeline
-  :ensure t
-  :init (doom-modeline-mode 1))
+; (use-package doom-modeline
+;   :ensure t
+;   :init (doom-modeline-mode 1))
 
-(setq doom-modeline-icon (display-graphic-p))
-(setq doom-modeline-major-mode-icon t)
-(setq doom-modeline-major-mode-color-icon t)
-(setq doom-modeline-buffer-state-icon t)
-(setq doom-modeline-buffer-modification-icon t)
-(setq doom-modeline-minor-modes nil)
-(setq doom-modeline-github-interval (* 30 60))
+; (setq doom-modeline-icon (display-graphic-p))
+; (setq doom-modeline-major-mode-icon t)
+; (setq doom-modeline-major-mode-color-icon t)
+; (setq doom-modeline-buffer-state-icon t)
+; (setq doom-modeline-buffer-modification-icon t)
+; (setq doom-modeline-minor-modes nil)
+; (setq doom-modeline-github-interval (* 30 60))
 
-;; Whether display the environment version.
-(setq doom-modeline-env-version t)
-;; Or for individual languages
-(setq doom-modeline-env-enable-python t)
-(setq doom-modeline-env-enable-ruby t)
-(setq doom-modeline-env-enable-perl t)
-(setq doom-modeline-env-enable-go t)
-(setq doom-modeline-env-enable-elixir t)
-(setq doom-modeline-env-enable-rust t)
+; ;; Whether display the environment version.
+; (setq doom-modeline-env-version t)
+; ;; Or for individual languages
+; (setq doom-modeline-env-enable-python t)
+; (setq doom-modeline-env-enable-ruby t)
+; (setq doom-modeline-env-enable-perl t)
+; (setq doom-modeline-env-enable-go t)
+; (setq doom-modeline-env-enable-elixir t)
+; (setq doom-modeline-env-enable-rust t)
 
-;; Change the executables to use for the language version string
-(setq doom-modeline-env-python-executable "python") ; or `python-shell-interpreter'
-(setq doom-modeline-env-ruby-executable "ruby")
-(setq doom-modeline-env-perl-executable "perl")
-(setq doom-modeline-env-go-executable "go")
-(setq doom-modeline-env-elixir-executable "iex")
-(setq doom-modeline-env-rust-executable "rustc")
+; ;; Change the executables to use for the language version string
+; (setq doom-modeline-env-python-executable "python") ; or `python-shell-interpreter'
+; (setq doom-modeline-env-ruby-executable "ruby")
+; (setq doom-modeline-env-perl-executable "perl")
+; (setq doom-modeline-env-go-executable "go")
+; (setq doom-modeline-env-elixir-executable "iex")
+; (setq doom-modeline-env-rust-executable "rustc")
 
 ;; ;; Alternativa para a mode-line do Doom-emacs
 ;; (use-package spaceline
@@ -924,6 +924,15 @@
   ;;   ("C-x C-b" execute-extended-command)
   ;;   ("C-k" kill-line)
   ;;   ("M-TAB" ergoemacs-call-keyword-completion)
+
+;; Redimensionando a janela de abertura do Emacs
+(setq default-frame-alist
+      '((top . 200) (left . 400)
+        (width . 80) (height . 46)))
+
+(setq initial-frame-alist '((top . 10) (left . 30)))
+
+
 
 (global-set-key  (kbd "C-<tab>") 'other-window)
 (global-set-key (kbd "<C-up>") 'shrink-window)
