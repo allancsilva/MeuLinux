@@ -1,5 +1,17 @@
 ;==========================================================
 ;
+; THIS IS AN EXAMPLE CONFIGURATION FILE!
+; IT IS NOT SUPPOSED TO WORK OUT OF THE BOX SINCE IS CONTAINS
+; SETTINGS THAT ARE SPECIFIC TO THE MACHINE WHICH WAS USED
+; TO GENERATE IT.
+; Please refer to the web documentation hosted at:
+; https://github.com/polybar/polybar#configuration
+; and
+; https://github.com/polybar/polybar/wiki/Configuration
+; if you want to automatically generate one for you.
+;
+;==========================================================
+;
 ;
 ;   ██████╗  ██████╗ ██╗  ██╗   ██╗██████╗  █████╗ ██████╗
 ;   ██╔══██╗██╔═══██╗██║  ╚██╗ ██╔╝██╔══██╗██╔══██╗██╔══██╗
@@ -16,276 +28,259 @@
 ;
 ;==========================================================
 
-[colors]
-;background = #1e222a
-background = #2E3440
-foreground = #c8ccd4
-
-color0 = #282c34
-color1 = #353b45
-color2 = #3e4451
-color3 = #545862
-color4 = #565c64
-color5 = #abb2bf
-color6 = #b6bdca
-color7 = #c8ccd4
-color8 = #e06c75
-color9 = #d19a66
-color10 = #e5c07b
-color11 = #98c379
-color12 = #56b6c2
-color13 = #61afef
-color14 = #c678dd
-color15 = #be5046
-dark-light = #272A2B 
-active-light = #313435
-
-pseudo-transparency = true
 
 [bar/example]
 
-
 enable-ipc=true
-height = 22
-width = 100%
-;bottom = true
+height = 30
+width = 80%
+offset-x = 10%
 offset-y = 10
-padding = 10
-
+radius = 0
+border-size = 0
+border-color = #1a1e21
 
 scroll-up = bspwm-wsnext
 scroll-down = bspwm-wsprev
 wm-restack = bspwm
 override-redirect = false
 
+background = #1a1e21
+foreground = #eceff4
+foreground-alt = #555
+primary = #ffb52a
+secondary = #e60053
+alert = #bd2c40
 
-
-background = ${colors.background}
-foreground = ${colors.foreground}
-bottom = false
-;border-top-size = 5
-;border-bottom-size = 5
-border-top-color = ${colors.background}
-border-bottom-color = ${colors.background}
 
 line-size = 2
 
-; modules-left = round-left workspaces round-right
-modules-left =  i3 bspwm 
-modules-center =   firefox github code email todo pdf nautilus
-modules-right =  round-left cpu round-right round-left memory round-right round-left time  round-right  powermenu
-; modules-right =  volume battery  round-left cpu round-right updates wlan mem xbacklight round-left time  round-right  powermenu
+
+padding=0
+font-0=Iosevka Nerd Font:size=11;3
+font-1=Hack Nerd Font:size=12:antialias=true;3
+font-2=Fantasque Sans Mono:size=11;3
 
 
-font-0 = JetBrainsMono Nerd Font:style=Bold:pixelsize=10;3
-font-1 = JetBrainsMono Nerd Font:size=12;4
-font-2 = Material Design Icons:style=Bold:size=10;3
-font-3 = unifont:fontformat=truetype:size=12:antialias=true;
-font-4 = FontAwesome:size=14;4
+dpi = 100
 
-; font-4 = NotoSans-Regular:size=9;0
-; font-5 = Material\ Icons:size=11;2
-; font-6 = xos4\ Terminus:size=14;0
-; font-7 = Siji:pixelsize=11;1
-; font-8 = FontAwesome:size=11;0
+modules-left = empty-space bspwm empty-space 
 
 
 
-[module/i3]
-type = internal/i3
-format = <label-state> <label-mode>
-index-sort = true
-wrapping-scroll = false
-
-; Only show workspaces on the same output as the bar
-;pin-workspaces = true
-
-label-mode-padding = 2
-label-mode-foreground = #282c34
-label-mode-background = #282c34
-
-; ; focused = Active workspace on focused monitor
-label-focused = %index%
-label-focused-background = #353b45
-; label-focused-underline = #be5046
-label-focused-padding = 2
-
-fuzzy-match = true
-ws-icon-0 = 1;
-ws-icon-1 = 2;
-ws-icon-2 = 3;
-ws-icon-3 = 4;
-ws-icon-4 = 5;
-ws-icon-default = 
-
-; unfocused = Inactive workspace on any monitor
-label-unfocused = %index%
-label-unfocused-padding = 2
-label-unfocused-background = #282c34
+modules-center = xwindow
+modules-right = empty-space filesystem cpu memory empty-space time empty-space
+;modules-right = filesystem memory cpu wlan powermenu empty-space
 
 
-; ; visible = Active workspace on unfocused monitor
-; label-visible = %index%
-; label-visible-background = ${self.label-focused-background}
-; label-visible-underline = ${self.label-focused-underline}
-; label-visible-padding = ${self.label-focused-padding}
 
-; urgent = Workspace with urgency hint set
-label-urgent = %index%
-label-urgent-background = #be5046
-label-urgent-padding = 2
-
-; Separator in between workspaces
-; label-separator = 
+[module/empty-space]
+type = custom/text
+content = "  "
+content-background = #2a2e36
 
 
+[module/xwindow]
+type = internal/xwindow
+label = %title:0:30:...%
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 [module/bspwm]
 type = internal/bspwm
 format = <label-state>
-format-padding = 2
+format-padding = 0
 index-sort = true
+
 
 enable-click = true
 reverse-scroll = false
 
 label-focused = 
 label-focused-padding = 1
+label-focused-background = #464a52
+
 
 label-occupied = 
 label-occupied-padding = 1
+label-occupied-background = #2a2e36
 
 
 label-empty = 
 label-empty-padding = 1
+label-empty-background = #2a2e36
 
 
 [module/round-left]
 type = custom/text
 content = %{T3}%{T-}
-content-foreground = #282c34
+content-foreground = #2a2e36
 
 [module/round-right]
 type = custom/text
 content = %{T3}%{T-}
-content-foreground = #282c34
+content-foreground = #2a2e36
 
 
-[module/firefox]
-type = custom/text 
 
-format = <label>
-content =" " 
-content-padding = 2
-; click-left = doas zzz &
-click-left = firefox
 
-content-foreground = #f25287
+;;[module/bspwm]
+;;type = internal/bspwm
+
+; Only show workspaces defined on the same output as the bar
+; NOTE: The bspwm and XRandR monitor names must match, which they do by default.
+; Default: true
+;;pin-workspaces = true
+
+; Output mode flags after focused state label
+; Default: false
+;;inline-mode = false
+
+; Create click handler used to focus workspace
+; Default: true
+;;enable-click = false
+
+; Create scroll handlers used to cycle workspaces
+; Default: true
+;;enable-scroll = false
+
+; Set the scroll cycle direction
+; Default: true
+;;reverse-scroll = false
+
+; Use fuzzy (partial) matching on labels when assigning
+; icons to workspaces
+; Example: code;♚ will apply the icon to all workspaces
+; containing 'code' in the label
+; Default: false
+;;fuzzy-match = true
+
+; ws-icon-[0-9]+ = label;icon
+; Note that the label needs to correspond with the bspwm workspace name
+;;ws-icon-0 = code;♚
+;;ws-icon-1 = office;♛
+;;ws-icon-2 = graphics;♜
+;;ws-icon-3 = mail;♝
+;;ws-icon-4 = web;♞
+;;ws-icon-default = ♟
+
+; Available tags:
+;   <label-monitor>
+;   <label-state> - gets replaced with <label-(focused|urgent|occupied|empty)>
+;   <label-mode> - gets replaced with <label-(monocle|tiled|fullscreen|floating|locked|sticky|private)>
+; Default: <label-state>
+;;format = <label-state> <label-mode>
+
+; Available tokens:
+;   %name%
+; Default: %name%
+;;label-monitor = %name%
+
+; If any values for label-dimmed-N are defined, the workspace/mode
+; colors will get overridden with those values if the monitor is out of focus
+; To only override workspaces in a specific state, use:
+;   label-dimmed-focused
+;   label-dimmed-occupied
+;   label-dimmed-urgent
+;   label-dimmed-empty
+;;label-dimmed-foreground = #555
+;;label-dimmed-underline = ${bar/top.background}
+;;label-dimmed-focused-background = #f00
+
+; Available tokens:
+;   %name%
+;   %icon%
+;   %index%
+; Default: %icon%  %name%
+;;label-focused = %icon%
+;;label-focused-foreground = #ffffff
+;;label-focused-background = #3f3f3f
+;;label-focused-underline = #fba922
+
+; Available tokens:
+;   %name%
+;   %icon%
+;   %index%
+; Default: %icon%  %name%
+;;label-occupied = %icon%
+;;label-occupied-underline = #555555
+
+; Available tokens:
+;   %name%
+;   %icon%
+;   %index%
+; Default: %icon%  %name%
+;;label-urgent = %icon%
+;;label-urgent-foreground = #000000
+;;label-urgent-background = #bd2c40
+;;label-urgent-underline = #9b0a20
+
+; Available tokens:
+;   %name%
+;   %icon%
+;   %index%
+; Default: %icon%  %name%
+;;label-empty = %icon%
+;;label-empty-foreground = #55
+
+; The following labels will be used to indicate the layout/mode
+; for the focused workspace. Requires <label-mode>
+;
+; Available tokens:
+;   None
+;label-monocle = 
+;label-tiled = 
+;label-fullscreen = 
+;label-floating = 
+;label-pseudotiled = P
+;label-locked = 
+;label-locked-foreground = #bd2c40
+;label-sticky = 
+;label-sticky-foreground = #fba922
+;label-private = 
+;label-private-foreground = #bd2c40
+
+; Separator in between workspaces
+;;label-separator = |
+;;label-separator-padding = 2
+;;label-separator-foreground = #ffb52a
+
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+[module/filesystem]
+type = internal/fs
+interval = 25
+
+mount-0 = /
+format-prefix ="   " 
+label-mounted = %{F-}  %percentage_used%%
+label-mounted-background = #282c34
+label-unmounted = %mountpoint% not mounted
+label-unmounted-foreground = ${colors.foreground-alt}
+
 format-background = #282c34
-format-foreground = #82868e
 
 
-[module/code]
-type = custom/text 
+[module/cpu]
+type = internal/cpu
+interval = 2.5
 
-format = <label>
-content =" " 
-content-padding = 2
-; click-left = doas zzz &
-click-left = code
+format-prefix ="  " 
+format =  <label> 
 
-content-foreground = #c8ccd4
+label = CPU %percentage%%
 format-background = #282c34
-format-foreground = #82868e
-
-
-
-[module/github]
-type = custom/text 
-
-format = <label>
-content =" " 
-content-padding = 2
-
-click-left = github
-
-content-foreground = #e5c07b
-format-background = #282c34
-format-foreground = #82868e
-
-
-[module/todo]
-type = custom/text 
-
-format = <label>
-content =" " 
-content-padding = 2
-
-click-left = mailspring
-
-content-foreground = #56b6c2
-format-background = #282c34
-format-foreground = #82868e
-
-
-
-[module/pdf]
-type = custom/text 
-
-format = <label>
-content =" " 
-content-padding = 2
-
-click-left = okular
-
-content-foreground = #abb2bf
-format-background = #282c34
-format-foreground = #82868e
-
-
-[module/email]
-type = custom/text 
-
-format = <label>
-content =" " 
-content-padding = 2
-
-click-left = mailspring
-
-content-foreground = #d19a66
-format-background = #282c34
-format-foreground = #82868e
-
-
-[module/nautilus]
-type = custom/text 
-
-format = <label>
-content =" " 
-content-padding = 2
-
-click-left = nautilus
-
-content-foreground = 
-format-background = #282c34
-format-foreground = #82868e
-
-
-
-[module/time]
-type = internal/date
-interval = 60
-format = <label>
-format-background = #282c34
-format-foreground = #82868e
-date = 󰥔 %H:%M%{F-}
-time-alt = 󰃭 %a, %b %d%{F-}
-label = %date%%time%
-
+format-foreground = #989cff
 
 [module/memory]
 type = internal/memory
 interval = 2
-format-prefix = "﬙ "
+format-prefix = " "
 
 format-background = #282c34
 format-foreground = #989cff
@@ -294,191 +289,102 @@ format-prefix-foreground = #d19a66
 label-padding = 1
 label = %percentage_used%%
 
-[module/cpu]
-type = internal/cpu
-interval = 2.5
 
-format-prefix ="  " 
-format =  <label> 
+[module/wlan]
+type = internal/network
+interface = wlp59s0
+interval = 3.0
 
-label = CPU %percentage%%
-format-background = #282c34
-format-foreground = #989cff
+format-connected = <ramp-signal> <label-connected>
+format-connected-underline = #9f78e1
+label-connected = %essid%
+
+format-disconnected =
+;format-disconnected = <label-disconnected>
+;format-disconnected-underline = ${self.format-connected-underline}
+;label-disconnected = %ifname% disconnected
+;label-disconnected-foreground = ${colors.foreground-alt}
+
+ramp-signal-0 = 
+ramp-signal-1 = 
+ramp-signal-2 = 
+ramp-signal-3 = 
+ramp-signal-4 = 
+ramp-signal-foreground = ${colors.foreground-alt}
+
+[module/eth]
+type = internal/network
+interface = enp0s31f6
+interval = 3.0
+
+format-connected-underline = #55aa55
+format-connected-prefix = " "
+format-connected-prefix-foreground = ${colors.foreground-alt}
+label-connected = %local_ip%
+
+format-disconnected =
+;format-disconnected = <label-disconnected>
+;format-disconnected-underline = ${self.format-connected-underline}
+;label-disconnected = %ifname% disconnected
+;label-disconnected-foreground = ${colors.foreground-alt}
+
+[module/time]
+type = internal/date
+interval = 60
+
+format = <label>
+format-background = #2a2e36
+format-foreground = #eceff4
+
+date = 󰥔 %H:%M%{F-}
+time-alt = 󰃭 %a, %b %d% {F-}
+
+label = %date% %time%
+
+format-prefix = 
 
 
 
 
 [module/powermenu]
-type = custom/text 
-content =" " 
-content-padding = 2
-; click-left = doas zzz &
-click-left = poweroff
-content-foreground = #f25287
+type = custom/menu
 
+expand-right = true
 
+format-spacing = 1
 
-[module/battery]
-type = internal/battery
-battery = BAT1
-adapter = AC0
-full-at = 98
+label-open = 
+label-open-foreground = ${colors.secondary}
+label-close =  cancel
+label-close-foreground = ${colors.secondary}
+label-separator = |
+label-separator-foreground = ${colors.foreground-alt}
 
-format-charging = <animation-charging> <label-charging>
-label-charging = %percentage%%
-format-charging-foreground = ${colors.color4}
-format-charging-background = ${colors.background}
+menu-0-0 = reboot
+menu-0-0-exec = menu-open-1
+menu-0-1 = power off
+menu-0-1-exec = menu-open-2
 
-format-discharging = <ramp-capacity> <label-discharging>
-label-discharging = %percentage%%
-format-discharging-foreground = ${colors.foreground}
-format-discharging-background = ${colors.background}
+menu-1-0 = cancel
+menu-1-0-exec = menu-open-0
+menu-1-1 = reboot
+menu-1-1-exec = sudo reboot
 
-format-full-prefix = "  "
-format-full-prefix-foreground = #A0E8A2
-format-foreground = ${colors.color4}
-format-background = ${colors.background}
+menu-2-0 = power off
+menu-2-0-exec = sudo poweroff
+menu-2-1 = cancel
+menu-2-1-exec = menu-open-0
 
-label-discharging-foreground = ${colors.foreground}
-ramp-capacity-foreground =  #A0E8A2  
-label-charging-foreground = ${colors.foreground}
+[settings]
+screenchange-reload = true
+;compositing-background = xor
+;compositing-background = screen
+;compositing-foreground = source
+;compositing-border = over
+;pseudo-transparency = false
 
-label-padding = 1
+[global/wm]
+margin-top = 0
+margin-bottom = 0
 
-ramp-capacity-0 = "  " 
-ramp-capacity-1 = "  " 
-ramp-capacity-2 = "  " 
-ramp-capacity-3 = "  " 
-ramp-capacity-4 = "  "
-
-animation-charging-0 = "  " 
-animation-charging-1 = "  " 
-animation-charging-2 = "  " 
-animation-charging-3 = "  " 
-animation-charging-4 = "  "
-
-animation-charging-foreground = #DF8890
-animation-charging-framerate = 750
-
-format-charging-padding = 1
-format-discharging-padding = 1
-
-
-; [module/updates]
-; type = custom/script
-; exec = doas xbps-install -S > /dev/null 2>&1; xbps-updates
-; format = <label>
-; interval = 4600 
-; label =  %output%  
-; label-padding = 2
-; label-foreground = #BF616A
-
-
-; [module/wlan]
-; type = internal/network
-; interface = wlp2s0
-; interval = 3.0
-; format-connected =  <label-connected>
-; label-connected = "󰤪  " 
-; label-connected-foreground = #A3BE8C 
-
-; [module/temperature]
-; type = internal/temperature
-; thermal-zone = 0
-; warn-temperature = 70
-
-; format = <ramp> <label>
-; format-warn = <ramp> <label-warn>
-; format-padding = 1
-; label = %temperature%
-; label-warn = %temperature%
-; ramp-0 =  "󰜗" 
-; ramp-font = 3
-; ramp-foreground = #a4ebf3
-
-; [module/workspaces]
-; type = internal/xworkspaces
-; pin-workspaces = true
-; enable-click = true
-; enable-scroll = true
-; format-padding = 0
-
-; icon-0 =  ; 
-; icon-1 =  ; 
-; icon-2 =  ; 
-; icon-3 =  ; 
-; icon-4 =  ; 
-
-; icon-default = 
-
-; format = <label-state>
-; format-background = #282c34
-; label-active = %name%
-; label-occupied = %name%
-; label-urgent = %icon%
-; label-empty = %name%
-
-; label-occupied-padding = 1
-; label-empty-padding = 1
-; label-urgent-padding = 1
-; label-active-padding = 1
-
-; label-active-foreground =  #d47d85
-; label-occupied-foreground = #a2a8b5
-; label-empty-foreground =  #6f737b
-
-
-; [module/alsa]
-; type = internal/alsa
-; format-volume = <label-volume> <bar-volume>
-; label-volume = " "  
-; label-volume-foreground = ${colors.foreground}
-; format-muted-foreground = ${colors.foreground}
-; label-muted = 󰚙
-
-; format-muted-padding = 1
-
-; bar-volume-width = 10
-; bar-volume-foreground-0 = #61afef
-; bar-volume-foreground-1 = #61afef
-; bar-volume-foreground-2 = #61afef
-; bar-volume-foreground-3 = #61afef
-; bar-volume-foreground-4 = #61afef
-; bar-volume-foreground-5 = #61afef
-; bar-volume-foreground-6 = #61afef
-; bar-volume-gradient = false
-; bar-volume-indicator = 
-; bar-volume-indicator-foreground = #61afef
-; bar-volume-indicator-font = 2
-; bar-volume-fill = ━ 
-; bar-volume-fill-foreground = #61afef
-; bar-volume-fill-font = 2
-; bar-volume-empty = ━
-; bar-volume-empty-font = 2
-; bar-volume-empty-foreground = ${colors.foreground}
-; format-volume-padding = 2
-
-
-
-; [module/volume]
-; type = custom/script
-; exec = amixer get Master | awk '$0~/%/{print $4}' | tr -d '[]'
-; format = <label>
-; internal = 5.0
-; label = %output% 
-; label-foreground = #BF616A
-; label-padding = 1
-
-; [module/xbacklight]
-; type = internal/xbacklight
-; format = <label>
-; format-prefix = "  "
-; label = %percentage%
-; format-prefix-foreground = #61afef
-; label-foreground =   #D8DEE9
-; format-padding = 1
-
-
-[module/xwindow]
-type = internal/xwindow
-label = %title:0:30:...
+; vim:ft=dosini
