@@ -72,7 +72,7 @@ modules-left = dark-space round-left bspwm round-right
 
 modules-center = xwindow 
 
-modules-right = round-left filesystem cpu memory network round-right dark-space round-left time round-right dark-space
+modules-right = round-left filesystem cpu memory network round-right dark-space round-left time round-right powermenu dark-space
 
 
 ;modules-right = filesystem memory cpu wlan powermenu empty-space
@@ -141,67 +141,18 @@ content-foreground = #09090a
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;[module/filesystem]
-;type = internal/fs
-;interval = 25
-
-;mount-0 = /
-;label-mounted = %{F-"#969696"}  HD %percentage_used%%
-;label-mounted-background = #09090a
-;label-mounted-foreground = #969696
-;label-unmounted-foreground = #969696
-;label-unmounted = %mountpoint% not mounted
-
 
 [module/filesystem]
 type = internal/fs
+interval = 20
 
 ; Mountpoints to display
 mount-0 = /
 ;;mount-1 = /home
 ;;mount-2 = /var
 
-; Seconds to sleep between updates
-; Default: 30
-interval = 20
-
-; Display fixed precision values
-; Default: false
 fixed-values = true
 
-;; Available tags:
-;;   <label-mounted> (default)
-;;   <bar-free>
-;;   <bar-used>
-;;   <ramp-capacity>
-;format-mounted = <label-mounted>
-;format-mounted-prefix = 
-;format-mounted-prefix-background = #09090a
-;format-mounted-prefix-foreground = #969696
-
-format-mounted-prefix-padding = 1
-format-mounted-overline = ${color.background}
-format-mounted-underline = ${color.background}
-
-; Available tags:
-;   <label-unmounted> (default)
-format-unmounted = <label-unmounted>
-format-unmounted-prefix = 
-format-unmounted-prefix-background = #09090a
-format-unmounted-prefix-foreground = #969696
-format-unmounted-prefix-padding = 1
-format-unmounted-overline = ${color.background}
-format-unmounted-underline = ${color.background}
-
-; Available tokens:
-;   %mountpoint%
-;   %type%
-;   %fsname%
-;   %percentage_free%
-;   %percentage_used%
-;   %total%
-;   %free%
-;   %used%
 ; Default: %mountpoint% %percentage_free%%
 label-mounted = " HD %percentage_free%%"
 label-mounted-background = #09090a
@@ -217,35 +168,79 @@ label-unmounted-foreground = #969696
 label-unmounted-padding = 1
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
 [module/cpu]
 type = internal/cpu
 interval = 2.5
-
-format-prefix ="  " 
-format =  <label> 
-
-label = CPU %percentage%%
+label-padding = 1
+label = " CPU %percentage%%"
 format-background = #09090a
 format-foreground = #969696
-;format-prefix-foreground = #4bffdc
+
+
 
 [module/memory]
 type = internal/memory
 interval = 2
-format-prefix = "  " 
+;format-prefix = "  " 
 
 format-background = #09090a
 format-foreground = #969696
-;format-prefix-foreground = #d19a66
-;format-underline = #4bffdc
 label-padding = 1
-label = MEM %percentage_used%%
+label = " MEM %percentage_used%%"
+
+
+
+
+
+; -=-=-=-=--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-=-=-=-=-=-=-=-=-=-=
+; -=-=-=-=--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-=-=-=-=-=-=-=-=-=-=
+; -=-=-=-=--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-=-=-=-=-=-=-=-=-=-=
+; -=-=-=-=--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-=-=-=-=-=-=-=-=-=-=
+
+; If you use both a wired and a wireless network, just add 2 module definitions. For example
+[module/wired-network]
+type = internal/network
+interface = wlp3s0
+
+; Normal Module
+[module/network]
+type = internal/network
+interface = wlan0
+interval = 1.0
+accumulate-stats = true
+unknown-as-up = true
+
+
+format-connected = <label-connected>
+format-connected-prefix = 
+format-connected-prefix-background = #09090a
+format-connected-prefix-foreground = #969696
+format-connected-prefix-padding = 1
+
+format-disconnected = <label-disconnected>
+format-disconnected-prefix = ﲁ
+format-disconnected-prefix-background = #09090a
+format-disconnected-prefix-foreground = #bd2c40
+format-disconnected-prefix-padding = 1
+
+label-connected = "%{A1:networkmanager_dmenu &:}%essid%%{A}"
+label-connected-background = #09090a
+label-connected-foreground = #969696
+label-connected-padding = 1
+
+label-disconnected = "%{A1:networkmanager_dmenu &:}Offline%{A}"
+label-disconnected-background = #09090a
+label-disconnected-foreground = #bd2c40
+label-disconnected-padding = 1
+
+; Only applies if <ramp-signal> is used
+ramp-signal-0 = 
+ramp-signal-1 = 
+ramp-signal-2 = 
+
+
+
+
 
 
 [module/time]
@@ -264,72 +259,6 @@ label = %date% %time%
 format-prefix = 
 
 
-; -=-=-=-=--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-=-=-=-=-=-=-=-=-=-=
-; -=-=-=-=--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-=-=-=-=-=-=-=-=-=-=
-; -=-=-=-=--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-=-=-=-=-=-=-=-=-=-=
-; -=-=-=-=--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-=-=-=-=-=-=-=-=-=-=
-
-; If you use both a wired and a wireless network, just add 2 module definitions. For example
-[module/wired-network]
-type = internal/network
-interface = eth0
-
-[module/wireless-network]
-type = internal/network
-interface = wlp3s0
-
-; Normal Module
-[module/network]
-type = internal/network
-interface = wlan0
-
-
-
-; Seconds to sleep between updates
-; Default: 1
-interval = 1.0
-
-; Test connectivity every Nth update
-; A value of 0 disables the feature
-; NOTE: Experimental (needs more testing)
-; Default: 0
-;ping-interval = 3
-
-; @deprecated: Define min width using token specifiers (%downspeed:min% and %upspeed:min%)
-; Minimum output width of upload/download rate
-; Default: 3
-;;udspeed-minwidth = 5
-
-; Accumulate values from all interfaces
-; when querying for up/downspeed rate
-; Default: false
-accumulate-stats = true
-
-; Consider an `UNKNOWN` interface state as up.
-; Some devices have an unknown state, even when they're running
-; Default: false
-unknown-as-up = true
-
-; Available tags:
-;   <label-connected> (default)
-;   <ramp-signal>
-format-connected = <ramp-signal> <label-connected>
-format-connected-prefix = 
-format-connected-background = #09090a
-format-connected-foreground = #969696
-
-
-; Available tags:
-;   <label-disconnected> (default)
-format-disconnected = <label-disconnected>
-format-disconnected-prefix = ﲁ
-format-disconnected-background = #09090a
-format-disconnected-foreground = #F4F482
-
-; Only applies if <ramp-signal> is used
-ramp-signal-0 = 
-ramp-signal-1 = 
-ramp-signal-2 = 
 
 
 
@@ -341,11 +270,11 @@ expand-right = true
 format-spacing = 1
 
 label-open = 
-label-open-foreground = ${colors.secondary}
+label-open-foreground = #F4F482
 label-close =  cancel
-label-close-foreground = ${colors.secondary}
+label-close-foreground = #F4F482
 label-separator = |
-label-separator-foreground = ${colors.foreground-alt}
+label-separator-foreground = #F4F482
 
 menu-0-0 = reboot
 menu-0-0-exec = menu-open-1
@@ -361,6 +290,8 @@ menu-2-0 = power off
 menu-2-0-exec = sudo poweroff
 menu-2-1 = cancel
 menu-2-1-exec = menu-open-0
+
+
 
 [settings]
 screenchange-reload = true
