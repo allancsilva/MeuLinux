@@ -11,6 +11,7 @@
 (setq save-abbrevs 'silently)
 (setq sentence-end-double-space nil)
 
+(setq initial-scratch-message nil)      ; No *scratch* buffer message
 (scroll-bar-mode -1)                    ; Disable visible scrollbar
 (tool-bar-mode -1)                      ; Disable the toolbar
 (tooltip-mode -1)                       ; Disable tooltips
@@ -20,7 +21,7 @@
 (display-time-mode 1)
 (setq use-package-compute-statistics t)
 ;; (global-hl-line-mode 1)
-(setq-default cursor-type 'bar) 
+(setq-default cursor-type 'bar)
 (setq inhibit-startup-message t)
 (setq ring-bell-function 'ignore)
 (setq create-lockfiles nil)
@@ -29,6 +30,7 @@
 
 (setq-default indent-tabs-mode nil)
 (setq-default tab-width 2)
+
 
 ;; Improve scrolling.
 (setq mouse-wheel-scroll-amount '(1 ((shift) . 1))) ;; one line at a time
@@ -51,14 +53,14 @@
 (setq read-file-name-completion-ignore-case t)
 ;; (defvar my/font-family "Iosevka")
 
-;; ;; Make frame transparency overridable
-;; (defvar efs/frame-transparency '(90 . 90))
+; ;; Make frame transparency overridable
+(defvar efs/frame-transparency '(90 . 90))
 
-;; ;; Set frame transparency
-;; (set-frame-parameter (selected-frame) 'alpha efs/frame-transparency)
-;; (add-to-list 'default-frame-alist `(alpha . ,efs/frame-transparency))
-;; (set-frame-parameter (selected-frame) 'fullscreen 'maximized)
-;; (add-to-list 'default-frame-alist '(fullscreen . maximized))
+;; Set frame transparency
+(set-frame-parameter (selected-frame) 'alpha efs/frame-transparency)
+(add-to-list 'default-frame-alist `(alpha . ,efs/frame-transparency))
+(set-frame-parameter (selected-frame) 'fullscreen 'maximized)
+(add-to-list 'default-frame-alist '(fullscreen . maximized))
 
 ;; Global minor modes
 (setq column-number-mode t)
@@ -96,9 +98,9 @@
                               (time-subtract after-init-time before-init-time)))
                      gcs-done)))
 
-;; Cuidado com isso !! Cuidado com isso !! Cuidado com isso !! 
+;; Cuidado com isso !! Cuidado com isso !! Cuidado com isso !!
 ;; Native Compilation
-;; I've started experimenting with the native-comp branch of Emacs for increased performance. 
+;; I've started experimenting with the native-comp branch of Emacs for increased performance.
 ;; Here are some settings to tweak the behavior slightly:
 (setq comp-async-report-warnings-errors nil)
 
@@ -128,67 +130,109 @@
 (require 'straight-x)
 
 
-;; Aqui o Package com o Melpa normal 
+;; Aqui o Package com o Melpa normal
 (require 'package)
 
 (setq package-archives '(("melpa" . "https://melpa.org/packages/")
                          ("org" . "https://orgmode.org/elpa/")))
 
-;; ;; Descomentar na primeira vez, e quando quiser atualizar
-;;   ;; Initialize use-package on non-Linux platforms
-;; (unless (package-installed-p 'use-package)
-;;   (package-install 'use-package))
-;; (unless package-archive-contents
-;;   (package-refresh-contents))  
+; ;; Descomentar na primeira vez, e quando quiser atualizar
+;   ;; Initialize use-package on non-Linux platforms
+; (unless (package-installed-p 'use-package)
+;   (package-install 'use-package))
+; (unless package-archive-contents
+;   (package-refresh-contents))
 
 (require 'use-package)
 (setq use-package-always-ensure t)
 
 
 
-;; ;; Instalar o Quelpa se precisar!!
-;; (if (require 'quelpa nil t)
-;;     (quelpa-self-upgrade)
-;;   (with-temp-buffer
-;;     (url-insert-file-contents
-;;      "https://framagit.org/steckerhalter/quelpa/raw/master/bootstrap.el")
-;;     (eval-buffer)))
-;; (quelpa
-;;  '(quelpa-use-package
-;;    :fetcher git
-;;    :url "https://github.com/quelpa/quelpa-use-package.git"
-;;    :stable nil))
-;; (require 'quelpa-use-package)
+;; Instalar o Quelpa se precisar!!
+; (if (require 'quelpa nil t)
+;     (quelpa-self-upgrade)
+;   (with-temp-buffer
+;     (url-insert-file-contents
+;      "https://framagit.org/steckerhalter/quelpa/raw/master/bootstrap.el")
+;     (eval-buffer)))
+; (quelpa
+;  '(quelpa-use-package
+;    :fetcher git
+;    :url "https://github.com/quelpa/quelpa-use-package.git"
+;    :stable nil))
+; (require 'quelpa-use-package)
+
+; ;; ----------------------------------------------------------------------------
+; ;; Geometria, mexer na posiçao do Buffer
+; ;; ----------------------------------------------------------------------------
+; ;; Fringe on left and right: 8 pixels
+; (fringe-mode '(8 . 8))
+
+; ;; Internal border: 32 pixels
+; (modify-frame-parameters (selected-frame)
+;                          '((internal-border-width . 20)))
+
+; ;; Redimensionando a janela de abertura do Emacs
+; (setq default-frame-alist
+;       '((top . 400) (left . 200)
+;        (width . 65) (height . 36)))
+; (setq initial-frame-alist '((top . 41) (left . 12) (right . 60)))
+
+
+; (setq-default frame-title-format "%b")
+; (setq         frame-title-format "%b")
+
+; ----------------------------------------------------------------------------
+; Headerline
+; ----------------------------------------------------------------------------
+(defun mode-line-fill (face reserve)
+  "Return empty space using FACE and leaving RESERVE space on the right."
+  (unless reserve
+    (setq reserve 20))
+  (when (and window-system (eq 'right (get-scroll-bar-mode)))
+    (setq reserve (- reserve 3)))
+  (propertize " "
+              'display `((space :align-to (- (+ right right-fringe right-margin) ,reserve)))
+              'face face))
+
+(setq-default header-line-format (list
+   "  "
+   'mode-line-buffer-identification
+   "   "
+
+   'mode-line-modified
+   "   "
+   `(vc-mode vc-mode)
+
+   ;; File read-only
+   '(:eval (if buffer-read-only
+               (list (mode-line-fill 'nil 15)
+                     (propertize " [read-only] " 'face 'header-line-grey))))
+
+   ;; File modified
+   '(:eval (if (buffer-modified-p)
+               (list (mode-line-fill 'nil 10)
+                     (propertize " [modified] " 'face 'header-line-red))
+             (list (mode-line-fill 'nil 10)
+                   (propertize "%4l:%3c " 'face 'header-line))))
+   ))
+(setq-default mode-line-format "")
+
+
+; ; ;; ----------------------------------------------------------------------------
+; ; ;; Font
+; ; ;; ----------------------------------------------------------------------------
+; ; (set-frame-font "Source Code Pro Light 14")
+; ; (add-to-list 'default-frame-alist
+; ;              '(font . "Source Code Pro Light 14"))
+
 
 ;; Change the user-emacs-directory to keep unwanted things out of ~/.emacs.d
 (setq user-emacs-directory (expand-file-name "~/.cache/emacs/")
       url-history-file (expand-file-name "url/history" user-emacs-directory))
 
 
-
-(straight-use-package
- '(nano-emacs :type git :host github :repo "rougier/nano-emacs"))
-
-(require 'nano-theme-dark)
-
-(require 'nano-faces)
-(nano-faces)
-
-(require 'nano-theme)
-(nano-theme)
-
-;; Nano header & mode lines
-(require 'nano-modeline)
-
-;; Welcome message
-(let ((inhibit-message t))
-  (message "Welcome to GNU Emacs / N Λ N O edition")
-  (message (format "Initialization time: %s" (emacs-init-time))))
-
-(require 'nano-splash)
-
-
-;; Pacotes começam aqui !!
+; ;; Pacotes começam aqui !!
 
 (use-package which-key
   :init (which-key-mode)
@@ -198,7 +242,7 @@
 
 (use-package perspective
   :demand t
-  :bind (("C-x C-b" . persp-list-buffers) 
+  :bind (("C-x C-b" . persp-list-buffers)
          ("C-M-k" . persp-switch)
          ("C-M-l" . persp-next)
          ("C-x k" . persp-kill-buffer*))
@@ -211,13 +255,13 @@
 
 (use-package auto-complete
   :ensure t
-  :init 
+  :init
   (progn
     (ac-config-default)
     (global-auto-complete-mode t)))
-    
+
 (use-package ace-window
-  :ensure t)    
+  :ensure t)
 
 (use-package page-break-lines
   :ensure t
@@ -229,32 +273,74 @@
   :init
   (minions-mode))
 
+
+;; Modos de textos, teclados do Emacs
+
+;; Cua eh o modo normal, por exemplo Ctrl + C normal, tudo normal
+; (cua-mode)
+; (require 'iso-transl)
+
+
+; ;; Quebrado, que triste
+; ;; Let's Be Evil !!!
+; ;; Teclas do Vim aqui
+(use-package evil
+  :ensure t
+  :config
+  (evil-mode 1)
+
+(use-package evil-leader
+  :ensure t
+  :config
+  (global-evil-leader-mode))
+
+(use-package evil-indent-textobject
+  :ensure t))
+
+(use-package powerline-evil
+  :ensure t
+  :config
+  (powerline-evil-vim-color-theme))
+
 (use-package evil-nerd-commenter
   :bind ("M-/" . evilnc-comment-or-uncomment-lines))
 
+;; gc operator, like vim-commentary
+(use-package evil-commentary
+  :ensure t
+  :bind (:map evil-normal-state-map
+              ("gc" . evil-commentary)))
+
+;; visual hints while editing
+(use-package evil-goggles
+  :ensure t
+  :config
+  (evil-goggles-use-diff-faces)
+  (evil-goggles-mode))
+
+;;;;;;;;;;;;;
 ;; (setq neo-theme 'arrow)
 ;; (setq-default neo-show-hidden-files t)
 ;; (global-set-key [f8] 'neotree-toggle)
 ;; (setq neo-window-width 30)
 
-;; (use-package neotree
-;;   :bind
-;;   ("<f8>" . neotree-toggle)
-;;   :config
-;;   ;; needs package all-the-icons
-;;   (setq neo-theme (if (display-graphic-p) 'icons 'arrow))
+(use-package neotree
+  :bind
+  ("<f8>" . neotree-toggle)
+  :config
+  ;; needs package all-the-icons
+  (setq neo-theme (if (display-graphic-p) 'icons 'arrow))
 
-;;   ;; Disable line-numbers minor mode for neotree
-;;   (add-hook 'neo-after-create-hook
-;;             (lambda (&rest _) (display-line-numbers-mode -1)))
+  ;; Disable line-numbers minor mode for neotree
+  (add-hook 'neo-after-create-hook
+            (lambda (&rest _) (display-line-numbers-mode -1)))
 
-;;   ;; Every time when the neotree window is opened, let it find current
-;;   ;; file and jump to node.
-;;   (setq neo-smart-open t)
-;;   (setq neo-window-width 30)
-;;   (setq-default neo-show-hidden-files t)
-;; )
-
+  ;; Every time when the neotree window is opened, let it find current
+  ;; file and jump to node.
+  (setq neo-smart-open t)
+  (setq neo-window-width 30)
+  (setq-default neo-show-hidden-files t)
+)
 
 (use-package bufler
   :disabled
@@ -390,7 +476,7 @@
 
 (use-package transpose-frame)
 
-;; Linguagens aqui   
+;; Linguagens aqui
 
 ;;; C/C++
 (use-package cmake-ide
@@ -405,16 +491,10 @@
     :mode "\\.js\\'"
     :config
     (setq-default js2-ignored-warnings '("msg.extra.trailing.comma")))
-    
+
 (use-package apheleia
   :config
   (apheleia-global-mode +1))
-
-(use-package prettier-js
-  ;; :hook ((js2-mode . prettier-js-mode)
-  ;;        (typescript-mode . prettier-js-mode))
-  :config
-  (setq prettier-js-show-errors nil))
 
 (use-package markdown-mode
    :commands (markdown-mode gfm-mode)
@@ -453,7 +533,7 @@
 (use-package skewer-mode
   :straight t)
 
-;; Python aqui 
+;; Python aqui
 ;; pip install elpy flake8 epc isort
 
 (use-package pyvenv)
@@ -464,149 +544,18 @@
     (add-hook 'python-mode-hook 'blacken-mode))
 
 
-;; Git 
+;; Git
 (use-package magit
     :bind ("C-x g" . magit-status))
 
+
 (use-package git-gutter
-    :config
-    (global-git-gutter-mode 't))
-
-
-;; ;; Ergoemacs aqui 
-;; (use-package ergoemacs-mode
-;;   :ensure t
-;;   :config
-;;   (progn
-;;     (setq ergoemacs-theme nil) ;; Uses Standard Ergoemacs keyboard theme
-;;     (setq ergoemacs-keyboard-layout "us") ;; Assumes QWERTY keyboard layout
-;;     (ergoemacs-mode 1)))
-
-;; God-mode aqui 
-;; (use-package god-mode
-;;     :disabled
-;;     :bind (("<escape>" . god-local-mode)
-;;            ("C-x C-1" . delete-other-windows)
-;;            ("C-x C-2" . split-window-below)
-;;            ("C-x C-3" . split-window-right)
-;;            ("C-x C-0" . delete-window)))
-
-;; Let's Be Evil !!! 
-;; Teclas do Vim aqui 
- 
-;; (defun dw/evil-hook ()
-;;   (dolist (mode '(custom-mode
-;;                   eshell-mode
-;;                   git-rebase-mode
-;;                   erc-mode
-;;                   circe-server-mode
-;;                   circe-chat-mode
-;;                   circe-query-mode
-;;                   sauron-mode
-;;                   term-mode))
-;;   (add-to-list 'evil-emacs-state-modes mode)))
-
-;; (defun dw/dont-arrow-me-bro ()
-;;   (interactive)
-;;   (message "Arrow keys are bad, you know?"))
-
-;; (use-package undo-tree
-;;   :init
-;;   (global-undo-tree-mode 1))
-
-;; (use-package evil
-;;   :init
-;;   (setq evil-want-integration t)
-;;   (setq evil-want-keybinding nil)
-;;   (setq evil-want-C-u-scroll t)
-;;   (setq evil-want-C-i-jump nil)
-;;   (setq evil-respect-visual-line-mode t)
-;;   (setq evil-undo-system 'undo-tree)
-;;   :config
-;;   (add-hook 'evil-mode-hook 'dw/evil-hook)
-;;   (evil-mode 1)
-;;   (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
-;;   (define-key evil-insert-state-map (kbd "C-h") 'evil-delete-backward-char-and-join)
-
-;;   ;; Use visual line motions even outside of visual-line-mode buffers
-;;   (evil-global-set-key 'motion "j" 'evil-next-visual-line)
-;;   (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
-
-;;   ;; (unless dw/is-termux
-;;   ;;   ;; Disable arrow keys in normal and visual modes
-;;   ;;   (define-key evil-normal-state-map (kbd "<left>") 'dw/dont-arrow-me-bro)
-;;   ;;   (define-key evil-normal-state-map (kbd "<right>") 'dw/dont-arrow-me-bro)
-;;   ;;   (define-key evil-normal-state-map (kbd "<down>") 'dw/dont-arrow-me-bro)
-;;   ;;   (define-key evil-normal-state-map (kbd "<up>") 'dw/dont-arrow-me-bro)
-;;   ;;   (evil-global-set-key 'motion (kbd "<left>") 'dw/dont-arrow-me-bro)
-;;   ;;   (evil-global-set-key 'motion (kbd "<right>") 'dw/dont-arrow-me-bro)
-;;   ;;   (evil-global-set-key 'motion (kbd "<down>") 'dw/dont-arrow-me-bro)
-;;   ;;   (evil-global-set-key 'motion (kbd "<up>") 'dw/dont-arrow-me-bro))
-
-;;   (evil-set-initial-state 'messages-buffer-mode 'normal)
-;;   (evil-set-initial-state 'dashboard-mode 'normal))
-
-;; (use-package evil-collection
-;;   :after evil
-;;   :init
-;;   (setq evil-collection-company-use-tng nil)  ;; Is this a bug in evil-collection?
-;;   :custom
-;;   (evil-collection-outline-bind-tab-p nil)
-;;   :config
-;;   (setq evil-collection-mode-list
-;;         (remove 'lispy evil-collection-mode-list))
-;;   (evil-collection-init))
-
-
-;; (use-package general
-;;   :config
-;;   (general-evil-setup t)
-
-;;   (general-create-definer dw/leader-key-def
-;;     :keymaps '(normal insert visual emacs)
-;;     :prefix "SPC"
-;;     :global-prefix "C-SPC")
-
-;;   (general-create-definer dw/ctrl-c-keys
-;;     :prefix "C-c"))
-
-
-
-(use-package ivy
-  :diminish
-  :bind (("C-s" . swiper)
-         :map ivy-minibuffer-map
-         ("TAB" . ivy-alt-done)
-         ("C-f" . ivy-alt-done)
-         ("C-l" . ivy-alt-done)
-         ("C-j" . ivy-next-line)
-         ("C-k" . ivy-previous-line)
-         :map ivy-switch-buffer-map
-         ("C-k" . ivy-previous-line)
-         ("C-l" . ivy-done)
-         ("C-d" . ivy-switch-buffer-kill)
-         :map ivy-reverse-i-search-map
-         ("C-k" . ivy-previous-line)
-         ("C-d" . ivy-reverse-i-search-kill))
-  :init
-  (ivy-mode 1)
+  :ensure t
+  :if (not window-system)
   :config
-  (setq ivy-use-virtual-buffers t)
-  (setq ivy-wrap t)
-  (setq ivy-count-format "(%d/%d) ")
-  (setq enable-recursive-minibuffers t)
+  (global-git-gutter-mode 1))
 
-  ;; Use different regex strategies per completion command
-  (push '(completion-at-point . ivy--regex-fuzzy) ivy-re-builders-alist) ;; This doesn't seem to work...
-  (push '(swiper . ivy--regex-ignore-order) ivy-re-builders-alist)
-  (push '(counsel-M-x . ivy--regex-ignore-order) ivy-re-builders-alist)
-
-  ;; Set minibuffer height for different commands
-  (setf (alist-get 'counsel-projectile-ag ivy-height-alist) 15)
-  (setf (alist-get 'counsel-projectile-rg ivy-height-alist) 15)
-  (setf (alist-get 'swiper ivy-height-alist) 15)
-  (setf (alist-get 'counsel-switch-buffer ivy-height-alist) 7))
-
+; Outros
 (use-package ivy-hydra
   :defer t
   :after hydra)
@@ -632,6 +581,7 @@
                            ;; Don't mess with EXWM buffers
                            (with-current-buffer buffer
                              (not (derived-mode-p 'exwm-mode)))))))))
+
 
 (use-package counsel
   :demand t
@@ -711,170 +661,58 @@
         embark-become-indicator embark-action-indicator))
 
 
-;; Outro tema do Emacs 
-;; Pra usa-lo primeiro e preciso desabilitar o nano-emacs la em cima
-;; Comente as linhas do nano-emacs e descomente essas aqui
+; ;; Tema do Emacs
+; ;; Pra usa-lo primeiro e preciso desabilitar o nano-emacs la em cima
+; ;; Comente as linhas do nano-emacs e descomente essas aqui
 
-; (use-package gruvbox-theme
-;   :config
-;   (load-theme 'gruvbox-dark-hard t))
+; ; (use-package gruvbox-theme
+; ;   :config
+; ;   (load-theme 'gruvbox-dark-hard t))
 
-;; ;; Lista de temas Gruvbox
-;; gruvbox
-;; gruvbox-dark-medium
-;; gruvbox-dark-soft
-;; gruvbox-dark-hard
-;; gruvbox-light-medium
-;; gruvbox-light-soft
-;; gruvbox-light-hard
+; ;; ;; Lista de temas Gruvbox
+; ;; gruvbox
+; ;; gruvbox-dark-medium
+; ;; gruvbox-dark-soft
+; ;; gruvbox-dark-hard
+; ;; gruvbox-light-medium
+; ;; gruvbox-light-soft
+; ;; gruvbox-light-hard
 
+(use-package chocolate-theme
+  :ensure t
+  :config
+  (load-theme 'chocolate t))
 
-;; ;; Temas do Emacs : O kaolin oferece muitos temas
-;; (use-package kaolin-themes
-;;   :config
-;;   (load-theme 'kaolin-dark t)
-;;   (kaolin-treemacs-theme))
+; ; ;; Temas do Emacs : O kaolin oferece muitos temas
+; ; (use-package kaolin-themes
+; ;   :config
+; ;   (load-theme 'kaolin-bubblegum t)
+; ;   (kaolin-treemacs-theme))
 
-;; ;; ;; Temas kaolin
-;; ;; kaolin-dark - a dark jade variant inspired by Sierra.vim
-;; ;; kaolin-light - light variant of the original kaolin-dark.
-;; ;; kaolin-aurora - Kaolin meets polar lights.
-;; ;; kaolin-bubblegum - Kaolin colorful theme with dark blue background.
-;; ;; kaolin-eclipse - a dark purple variant
-;; ;; kaolin-galaxy - bright theme based on one of the Sebastian Andaur arts.
-;; ;; kaolin-ocean - a dark blue variant.
-;; ;; kaolin-temple - dark background with syntax highlighting focus on blue, green and pink shades
-;; ;; kaolin-valley-dark - colorful Kaolin theme with brown background.
-;; ;; kaolin-valley-light - light variant of kaolin-valley theme.
-
-
-;; (use-package doom-themes
-;;   :ensure t
-;;   :config
-;;   ;; Global settings (defaults)
-;;   (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
-;;         doom-themes-enable-italic t) ; if nil, italics is universally disabled
-;;   (load-theme 'doom-dark+ t)
-
-;;   ;; Enable flashing mode-line on errors
-;;   (doom-themes-visual-bell-config)
-;;   ;; Enable custom neotree theme (all-the-icons must be installed!)
-;;   (doom-themes-neotree-config)
-;;   ;; or for treemacs users
-;;   (setq doom-themes-treemacs-theme "doom-monokai-pro") ; use "doom-colors" for less minimal icon theme
-;;   (doom-themes-treemacs-config)
-;;   ;; Corrects (and improves) org-mode's native fontification.
-;;   (doom-themes-org-config))
-
-;; ;; Name	                                   Description
-;; ;; doom-one	                               Flagship theme based on atom One Dark
-;; ;; doom-one-light	                         Flagship theme based on atom One Light
-;; ;; doom-vibrant	                           A more vibrant version of doom-one
-;; ;; doom-1337	                             ported from VSCode's 1337 Theme
-;; ;; doom-acario-dark	                       an original dark theme (thanks to gagbo)
-;; ;; doom-acario-light	                     an original light theme (thanks to gagbo)
-;; ;; doom-ayu-mirage	                       Dark variant from Ayu themes (thanks to LoveSponge)
-;; ;; doom-ayu-light	Light                    variant from Ayu themes(thanks to LoveSponge)
-;; ;; doom-badger	                           Based on original Badger theme
-;; ;; doom-challenger-deep	                   based on Vim's Challenger deep theme (thanks to fuxialexander)
-;; ;; doom-city-lights	                       based on Atom's City lights (thanks to fuxialexander)
-;; ;; doom-dark+	                             ported from VS Code's Dark+ theme (thanks to ema2159)
-;; ;; doom-dracula	                           an implementation of Dracula theme (thanks to fuxialexander)
-;; ;; doom-ephemeral	                         inspired in the Ephemeral Theme from elenapan's dotfiles (thanks to karetsu)
-;; ;; doom-fairy-floss	                       a candy colored Sublime theme by sailorhg (thanks to ema2159)
-;; ;; doom-flatwhite	                         a unique light theme ported from Flatwhite Syntax (thanks to ShaneKilkelly)
-;; ;; doom-gruvbox-light	                     adapted from Morhetz's Gruvbox light variant (thanks for jsoa)
-;; ;; doom-gruvbox	                           adapted from Morhetz's Gruvbox (thanks to JongW)
-;; ;; doom-henna	                             based on VS Code's Henna (thanks to jsoa)
-;; ;; doom-homage-black	                     dark variant of doom-homage white. (thanks to mskorzhinskiy)
-;; ;; doom-homage-white	                     a minimalistic, colorless theme, inspired by eziam, tao and jbeans themes. (thanks to mskorzhinskiy)
-;; ;; doom-horizon	                           ported from VS Code's Horizon (thanks to karetsu)
-;; ;; doom-Iosvkem	                           adapted from Iosvkem (thanks to neutaaaaan)
-;; ;; doom-ir-black	                         Port of VIM's IR_Black color scheme (thanks to legendre6891)
-;; ;; doom-laserwave	                         a clean 80's synthwave / outrun theme inspired by VS Code's laserwave (thanks to hyakt)
-;; ;; doom-manegarm	                         an original autumn-inspired dark theme (thanks to kenranunderscore)
-;; ;; doom-material	                         adapted from Material Themes (thanks to tam5)
-;; ;; doom-material-dark	                     adapted from Material Dark Theme (thanks to trev-dev)
-;; ;; doom-meltbus	                           a dark, mostly monochromatic theme (thanks to spacefrogg)
-;; ;; doom-miramare	                         a port of Franbach's Miramare, a variant of gruvbox theme (thanks to sagittaros)
-;; ;; doom-molokai	                           a theme based on Texmate's Monokai
-;; ;; doom-monokai-classic	                   port of Monokai's Classic variant (thanks to ema2159)
-;; ;; doom-monokai-pro	                       port of Monokai's Pro variant (thanks to kadenbarlow)
-;; ;; doom-monokai-machine	                   port of Monokai's Pro (Machine) variant (thanks to minikN)
-;; ;; doom-monokai-octagon	                   port of Monokai's Pro (Octagon) variant (thanks to minikN)
-;; ;; doom-monokai-ristretto	                 port of Monokai's Pro (Ristretto) variant (thanks to minikN)
-;; ;; doom-monokai-spectrum	                 port of Monokai's Pro (Spectrum) variant (thanks to minikN)
-;; ;; doom-moonlight	                         ported from VS Code's Moonlight Theme (thanks to Brettm12345)
-;; ;; doom-nord-light	                       light variant of Nord (thanks to fuxialexander)
-;; ;; doom-nord	                             dark variant of Nord (thanks to fuxialexander)
-;; ;; doom-nova	                             adapted from Nova (thanks to bigardone)
-;; ;; doom-oceanic-next	                     adapted from Oceanic Next theme (thanks to juanwolf)
-;; ;; doom-old-hope	                         based on An Old Hope theme (thanks to teesloane)
-;; ;; doom-opera-light	                       an original light theme (thanks to jwintz)
-;; ;; doom-opera	                             an original dark theme (thanks to jwintz)
-;; ;; doom-outrun-electric	                   a neon colored theme inspired in VS Code's Outrun Electric (thanks to ema2159)
-;; ;; doom-palenight	                         adapted from Material Themes (thanks to Brettm12345)
-;; ;; doom-peacock	                           based on Peacock from daylerees' themes (thanks to teesloane)
-;; ;; doom-plain-dark	                       based on plain (thanks to das-s)
-;; ;; doom-plain	                             based on plain (thanks to mateossh)
-;; ;; doom-rouge	                             ported from VSCode's Rouge Theme (thanks to JordanFaust)
-;; ;; doom-shades-of-purple	                 a purple and vibrant theme inspired by VSCode's Shades of Purple (thanks to [jwbaldwin])
-;; ;; doom-snazzy	                           a dark theme inspired in Atom's Hyper Snazzy (thanks to ar1a)
-;; ;; doom-solarized-dark	                   dark variant of Solarized (thanks to ema2159)
-;; ;; doom-solarized-dark-high-contrast	     high contrast dark variant of Solarized (thanks to jmorag)
-;; ;; doom-solarized-light	                   light variant of Solarized (thanks to fuxialexander)
-;; ;; doom-sourcerer	                         based on Sourcerer (thanks to defphil)
-;; ;; doom-spacegrey	                         I'm sure you've heard of it (thanks to teesloane)
-;; ;; doom-tokyo-night	                       based on Tokyo Night (thanks to FosterHangdaan)
-;; ;; doom-tomorrow-day	                     Tomorrow's light variant (thanks to emacswatcher)
-;; ;; doom-tomorrow-night	                   one of the dark variants of Tomorrow (thanks to emacswatcher)
-;; ;; doom-wilmersdorf	                       port of Ian Pan's Wilmersdorf (thanks to ema2159)
-;; ;; doom-xcode	                             Based off of Apple's Xcode Dark theme (thanks to kadenbarlow)
-;; ;; doom-zenburn	                           port of the popular Zenburn theme (thanks to jsoa)
+; ;; ;; ;; Temas kaolin
+; ;; ;; kaolin-dark - a dark jade variant inspired by Sierra.vim
+; ;; ;; kaolin-light - light variant of the original kaolin-dark.
+; ;; ;; kaolin-aurora - Kaolin meets polar lights.
+; ;; ;; kaolin-bubblegum - Kaolin colorful theme with dark blue background.
+; ;; ;; kaolin-eclipse - a dark purple variant
+; ;; ;; kaolin-galaxy - bright theme based on one of the Sebastian Andaur arts.
+; ;; ;; kaolin-ocean - a dark blue variant.
+; ;; ;; kaolin-temple - dark background with syntax highlighting focus on blue, green and pink shades
+; ;; ;; kaolin-valley-dark - colorful Kaolin theme with brown background.
+; ;; ;; kaolin-valley-light - light variant of kaolin-valley theme.
 
 
-;; ;; From melpa, M-x package-install RET doom-modeline RET.
-; (use-package doom-modeline
-;   :ensure t
-;   :init (doom-modeline-mode 1))
 
-; (setq doom-modeline-icon (display-graphic-p))
-; (setq doom-modeline-major-mode-icon t)
-; (setq doom-modeline-major-mode-color-icon t)
-; (setq doom-modeline-buffer-state-icon t)
-; (setq doom-modeline-buffer-modification-icon t)
-; (setq doom-modeline-minor-modes nil)
-; (setq doom-modeline-github-interval (* 30 60))
-
-; ;; Whether display the environment version.
-; (setq doom-modeline-env-version t)
-; ;; Or for individual languages
-; (setq doom-modeline-env-enable-python t)
-; (setq doom-modeline-env-enable-ruby t)
-; (setq doom-modeline-env-enable-perl t)
-; (setq doom-modeline-env-enable-go t)
-; (setq doom-modeline-env-enable-elixir t)
-; (setq doom-modeline-env-enable-rust t)
-
-; ;; Change the executables to use for the language version string
-; (setq doom-modeline-env-python-executable "python") ; or `python-shell-interpreter'
-; (setq doom-modeline-env-ruby-executable "ruby")
-; (setq doom-modeline-env-perl-executable "perl")
-; (setq doom-modeline-env-go-executable "go")
-; (setq doom-modeline-env-elixir-executable "iex")
-; (setq doom-modeline-env-rust-executable "rustc")
-
-;; ;; Alternativa para a mode-line do Doom-emacs
-;; (use-package spaceline
-;;   :ensure t  
-;;   :init (setq powerline-height 24
-;;               spaceline-highlight-face-func 'spaceline-highlight-face-evil-state
-;;               powerline-default-separator 'wave)
-;;   :config
-;;   (spaceline-spacemacs-theme))
+(use-package spaceline
+  :ensure t
+  :init (setq powerline-height 24
+              spaceline-highlight-face-func 'spaceline-highlight-face-evil-state
+              powerline-default-separator 'arrow)
+  :config
+  (spaceline-spacemacs-theme))
 
 
-;; Atalhos proprios 
+;; Atalhos proprios
 
   ;; Lista: original Emacs teclas !!!
   ;;   ("C-x o" other-window)
@@ -925,14 +763,6 @@
   ;;   ("C-k" kill-line)
   ;;   ("M-TAB" ergoemacs-call-keyword-completion)
 
-;; Redimensionando a janela de abertura do Emacs
-(setq default-frame-alist
-      '((top . 200) (left . 400)
-        (width . 80) (height . 46)))
-
-(setq initial-frame-alist '((top . 10) (left . 30)))
-
-
 
 (global-set-key  (kbd "C-<tab>") 'other-window)
 (global-set-key (kbd "<C-up>") 'shrink-window)
@@ -946,9 +776,9 @@
 
 (global-set-key (kbd "M-<tab>") 'transpose-frame)
 
-;; ;; C-z to 'undo, the default is C-/.
-;; (global-unset-key "\C-z")
-;; (global-set-key "\C-z" 'undo)
+;; C-z to 'undo, the default is C-/.
+(global-unset-key "\C-z")
+(global-set-key "\C-z" 'undo)
 
 ;; ;; Enabling control-c and control-v copy and paste
 
@@ -960,8 +790,6 @@
 (global-set-key (kbd "<f12>") 'next-buffer)
 (global-set-key (kbd "<f11>") 'previous-buffer)
 
-(cua-mode)
-(require 'iso-transl)
 
 
 
@@ -971,7 +799,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(fira-code-mode doom-modeline-now-playing rainbow-mode rainbow-delimiters smartparens which-key use-package no-littering neotree flycheck auto-package-update auto-complete all-the-icons ace-window)))
+   '(smartparens which-key use-package no-littering neotree flycheck auto-package-update auto-complete all-the-icons ace-window)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
