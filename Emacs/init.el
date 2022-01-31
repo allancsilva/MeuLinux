@@ -281,7 +281,6 @@
 ; (require 'iso-transl)
 
 
-; ;; Quebrado, que triste
 ; ;; Let's Be Evil !!!
 ; ;; Teclas do Vim aqui
 
@@ -291,7 +290,9 @@
     (setq evil-want-integration t)
     (setq evil-want-keybinding nil)
   :config
-  (evil-mode 1)
+    (evil-mode 1)
+    (evil-set-initial-state 'messages-buffer-mode 'normal)
+    (evil-set-initial-state 'dashboard-mode 'normal))
 
 (use-package evil-collection
   :after evil
