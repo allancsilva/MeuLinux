@@ -1,17 +1,8 @@
 ;; ;; NOTE: init.el is now generated from Emacs.org.  Please edit that file
-;; ;;       in Emacs and init.el will be generated automatically!
+;; ;; in Emacs and init.el will be generated automatically!
 
 ;; Configuraçoes gerais
-
 (menu-bar-mode -1)                      ; Disable the menu bar
-
-(setq kill-do-not-save-duplicates t)
-(setq mode-require-final-newline t)
-(setq next-line-add-newlines nil)
-(setq save-abbrevs 'silently)
-(setq sentence-end-double-space nil)
-
-(setq initial-scratch-message nil)      ; No *scratch* buffer message
 (scroll-bar-mode -1)                    ; Disable visible scrollbar
 (tool-bar-mode -1)                      ; Disable the toolbar
 (tooltip-mode -1)                       ; Disable tooltips
@@ -19,18 +10,14 @@
 (column-number-mode)
 (global-display-line-numbers-mode t)
 (display-time-mode 1)
-(setq use-package-compute-statistics t)
-;; (global-hl-line-mode 1)
-(setq-default cursor-type 'bar)
-(setq inhibit-startup-message t)
-(setq ring-bell-function 'ignore)
-(setq create-lockfiles nil)
-(defalias 'yes-or-no-p 'y-or-n-p)
+(setq kill-do-not-save-duplicates t)
+(setq mode-require-final-newline t)
+(setq next-line-add-newlines nil)
+(setq save-abbrevs 'silently)
+(setq sentence-end-double-space nil)
+(setq initial-scratch-message nil)      ; No *scratch* buffer message
 (setq help-window-select t)
-
-(setq-default indent-tabs-mode nil)
-(setq-default tab-width 2)
-
+(setq show-paren-style 'expression)     ; highlight text between parens
 
 ;; Improve scrolling.
 (setq mouse-wheel-scroll-amount '(1 ((shift) . 1))) ;; one line at a time
@@ -38,7 +25,14 @@
 (setq mouse-wheel-follow-mouse 't) ;; scroll window under mouse
 (setq scroll-step 1) ;; keyboard scroll one line at a time
 (setq use-dialog-box nil)
-
+(setq use-package-compute-statistics t)
+(setq inhibit-startup-message t)
+(setq ring-bell-function 'ignore)
+(setq create-lockfiles nil)
+(defalias 'yes-or-no-p 'y-or-n-p)
+(setq-default cursor-type 'bar)
+(setq-default indent-tabs-mode nil)
+(setq-default tab-width 2)
 
 ;; UTF-8
 (prefer-coding-system 'utf-8)
@@ -51,7 +45,6 @@
 (setq completion-ignore-case t)
 (setq read-buffer-completion-ignore-case t)
 (setq read-file-name-completion-ignore-case t)
-;; (defvar my/font-family "Iosevka")
 
 ; ;; Make frame transparency overridable
 (defvar efs/frame-transparency '(90 . 90))
@@ -68,14 +61,12 @@
 (delete-selection-mode 1)
 (global-subword-mode 1)
 
-
 ;; Highlight whitespace.
 (setq whitespace-line-column fill-column)
 (setq whitespace-style
       '(face lines-tail trailing tabs empty))
 (global-whitespace-mode +1)
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
-
 
 ;; Disable line numbers for some modes
 (dolist (mode '(org-mode-hook
@@ -98,13 +89,6 @@
                               (time-subtract after-init-time before-init-time)))
                      gcs-done)))
 
-;; Cuidado com isso !! Cuidado com isso !! Cuidado com isso !!
-;; Native Compilation
-;; I've started experimenting with the native-comp branch of Emacs for increased performance.
-;; Here are some settings to tweak the behavior slightly:
-(setq comp-async-report-warnings-errors nil)
-
-
 
 ;; Aqui o Straigth el que funciona que nem o Package do Melpa
 (defvar bootstrap-version)
@@ -119,48 +103,19 @@
       (goto-char (point-max))
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
-
 ;; Always use straight to install on systems other than Linux
 (setq straight-use-package-by-default (not (eq system-type 'gnu/linux)))
-
 ;; Use straight.el for use-package expressions
 (straight-use-package 'use-package)
-
 ;; Load the helper package for commands like `straight-x-clean-unused-repos'
 (require 'straight-x)
 
 
 ;; Aqui o Package com o Melpa normal
 (require 'package)
-
 (setq package-archives '(("melpa" . "https://melpa.org/packages/")
                          ("org" . "https://orgmode.org/elpa/")))
-
-; ;; Descomentar na primeira vez, e quando quiser atualizar
-;   ;; Initialize use-package on non-Linux platforms
-; (unless (package-installed-p 'use-package)
-;   (package-install 'use-package))
-; (unless package-archive-contents
-;   (package-refresh-contents))
-
-(require 'use-package)
 (setq use-package-always-ensure t)
-
-
-
-;; Instalar o Quelpa se precisar!!
-; (if (require 'quelpa nil t)
-;     (quelpa-self-upgrade)
-;   (with-temp-buffer
-;     (url-insert-file-contents
-;      "https://framagit.org/steckerhalter/quelpa/raw/master/bootstrap.el")
-;     (eval-buffer)))
-; (quelpa
-;  '(quelpa-use-package
-;    :fetcher git
-;    :url "https://github.com/quelpa/quelpa-use-package.git"
-;    :stable nil))
-; (require 'quelpa-use-package)
 
 ; ;; ----------------------------------------------------------------------------
 ; ;; Geometria, mexer na posiçao do Buffer
@@ -274,16 +229,37 @@
   (minions-mode))
 
 
-;; Modos de textos, teclados do Emacs
+;; Icones e Fontes
+(use-package all-the-icons
+  :ensure t
+  :if (display-graphic-p))
 
-;; Cua eh o modo normal, por exemplo Ctrl + C normal, tudo normal
-; (cua-mode)
-; (require 'iso-transl)
+(use-package editorconfig
+  :ensure t
+  :config
+  (editorconfig-mode 1))
 
+(use-package vscode-icon)
 
-; ;; Let's Be Evil !!!
-; ;; Teclas do Vim aqui
+(use-package yasnippet
+  :ensure t
+  :hook ((prog-mode . yas-minor-mode)
+         (conf-mode . yas-minor-mode)
+         (text-mode . yas-minor-mode)
+         (snippet-mode . yas-minor-mode)))
 
+(use-package yasnippet-snippets
+  :ensure t
+  :after (yasnippet)
+  :config (yas-global-mode 1))
+
+(use-package highlight-thing
+  :ensure t
+  :hook
+  (prog-mode . highlight-thing-mode))
+
+;; Let's Be Evil !!!
+;; Teclas do Vim aqui
 (use-package evil
   :ensure t
   :init
@@ -324,11 +300,6 @@
   (evil-goggles-use-diff-faces)
   (evil-goggles-mode))
 
-;;;;;;;;;;;;;
-;; 
-;; (setq-default neo-show-hidden-files t)
-;; (global-set-key [f8] 'neotree-toggle)
-;; (setq neo-window-width 30)
 
 (use-package neotree
   :bind
@@ -336,49 +307,20 @@
   :config
   ;; needs package all-the-icons
   (setq neo-theme (if (display-graphic-p) 'icons 'arrow))
-
-  ;; Disable line-numbers minor mode for neotree
-  (add-hook 'neo-after-create-hook
-            (lambda (&rest _) (display-line-numbers-mode -1)))
-
-  ;; Every time when the neotree window is opened, let it find current
-  ;; file and jump to node.
   (setq neo-theme 'arrow)
   (setq neo-smart-open t)
   (setq neo-window-width 25)
   (setq-default neo-show-hidden-files t)
-)
 
+  (add-hook 'neo-after-create-hook
+            (lambda (&rest _) (display-line-numbers-mode -1)))
 
-;; Icones e Fontes
+  (add-hook 'neo-after-create-hook
+            (lambda (&rest _) (setq mode-line-format nil)))
 
-(use-package all-the-icons
-  :ensure t
-  :if (display-graphic-p))
-
-(use-package editorconfig
-  :ensure t
-  :config
-  (editorconfig-mode 1))
-
-(use-package vscode-icon)
-
-(use-package yasnippet
-  :ensure t
-  :hook ((prog-mode . yas-minor-mode)
-         (conf-mode . yas-minor-mode)
-         (text-mode . yas-minor-mode)
-         (snippet-mode . yas-minor-mode)))
-
-(use-package yasnippet-snippets
-  :ensure t
-  :after (yasnippet)
-  :config (yas-global-mode 1))
-
-(use-package highlight-thing
-  :ensure t
-  :hook
-  (prog-mode . highlight-thing-mode))
+  (add-hook 'neo-after-create-hook
+            (lambda (&rest _) (setq header-line-format nil)))
+  )
 
 ;; Flychech
 ;; pip install pylint
@@ -392,31 +334,25 @@
   :config
     (add-hook 'prog-mode-hook 'smartparens-mode))
 
-
 (use-package rainbow-delimiters
   :init
   (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
   (add-hook 'geiser-repl-mode-hook 'rainbow-delimiters-mode)
   (add-hook 'cider-repl-mode-hook 'rainbow-delimiters-mode))
 
-
 (use-package alert
   :commands alert
   :config
   (setq alert-default-style 'notifications))
 
-
 (use-package ws-butler
   :hook ((text-mode . ws-butler-mode)
          (prog-mode . ws-butler-mode)))
-
 
 (use-package transpose-frame)
 
 
 ;; Linguagens aqui
-
-;;; C/C++
 (use-package cmake-ide
   :init (use-package rtags)
   :config (cmake-ide-setup))
@@ -471,9 +407,7 @@
 (use-package skewer-mode
   :straight t)
 
-;; Python aqui
 ;; pip install elpy flake8 epc isort
-
 (use-package pyvenv)
 
 ;; pip install black
@@ -481,20 +415,17 @@
     :config
     (add-hook 'python-mode-hook 'blacken-mode))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Tabnine, cuidado muito hack aqui !!! kkkkkk
-
 (use-package company
   :config
     (global-company-mode)
   :custom
   ;https://github.com/company-mode/company-mode/issues/14#issuecomment-290261406
   ; Do not downcase the returned candidates automatically
-  (company-dabbrev-downcase nil) 
+  (company-dabbrev-downcase nil)
   ; Trigger completion immediately.
-  (company-idle-delay 0) 
+  (company-idle-delay 0)
   (company-minimum-prefix-length 1)
   (company-tooltip-align-annotations t)
   (company-dabbrev-other-buffers t) ; search buffers with the same major mode
@@ -544,11 +475,9 @@
 (add-to-list 'company-transformers #'delete-dups)
 
 
-
 ;; Git
 (use-package magit
     :bind ("C-x g" . magit-status))
-
 
 (use-package git-gutter
   :ensure t
@@ -557,8 +486,7 @@
   (global-git-gutter-mode 1))
 
 
-
-; Outros
+;; Outros
 (use-package hydra
   :defer 1)
 
