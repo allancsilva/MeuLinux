@@ -117,6 +117,10 @@
                          ("org" . "https://orgmode.org/elpa/")))
 (setq use-package-always-ensure t)
 
+(when (not (package-installed-p 'use-package))
+  (package-refresh-contents)
+  (package-install 'use-package))
+
 ; ;; ----------------------------------------------------------------------------
 ; ;; Geometria, mexer na posiçao do Buffer
 ; ;; ----------------------------------------------------------------------------
@@ -392,12 +396,8 @@
 (use-package know-your-http-well
   :defer t)
 
-(use-package web-mode
-  :mode "(\\.\\(html?\\|ejs\\|tsx\\|jsx\\)\\'"
-  :config
-  (setq-default web-mode-code-indent-offset 2)
-  (setq-default web-mode-markup-indent-offset 2)
-  (setq-default web-mode-attribute-indent-offset 2))
+
+
 
 ;; 1. Start the server with `httpd-start'
 ;; 2. Use `impatient-mode' on any buffer
@@ -473,6 +473,58 @@
 
 ;; Remove duplicate candidate.
 (add-to-list 'company-transformers #'delete-dups)
+
+
+
+;; PHP linguagem Aqui
+;; Company language package for PHP
+;; instalar o PHP-mode
+;; sudo apt -y install php-elisp phpunit
+(use-package company-php
+  :defer
+  :after company)
+
+(use-package php-mode
+  :defer t
+  :hook ((php-mode . (lambda () (set (make-local-variable 'company-backends)
+       '(;; list of backends
+         company-phpactor
+         company-files
+         ))))))
+
+(use-package phpactor
+  :straight (phpactor
+             :host github
+             :type git
+             :repo "emacs-php/phpactor.el"
+             :branch "master"
+             :files ("*.el" "composer.json" "composer.lock" (:exclude "*test.el"))
+             ))
+
+(use-package phpunit
+  :ensure t
+  :after php-mode
+  :config
+  (setq phpunit-configuration-file "phpunit.xml"))
+
+(use-package web-mode
+  :defer t
+  :init
+  (add-to-list 'auto-mode-alist '("\\.phtml\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.tpl\\.php\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.[agj]sp\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.as[cp]x\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.erb\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.mustache\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.djhtml\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.ejs\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.tsx\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.jsx\\'" . web-mode))
+  :config
+  (setq-default web-mode-code-indent-offset 2)
+  (setq-default web-mode-markup-indent-offset 2)
+  (setq-default web-mode-attribute-indent-offset 2))
 
 
 ;; Git
