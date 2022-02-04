@@ -4,7 +4,7 @@
 
 # Screenshots (BSPWM)
 <img src= "https://raw.githubusercontent.com/allancsilva/MeuLinux/main/Screen/tela2.png">
-<img src= "https://raw.githubusercontent.com/allancsilva/MeuLinux/main/Screen/tela1.png">  <br><br>
+<img src= "https://raw.githubusercontent.com/allancsilva/MeuLinux/main/Screen/tela1.png">
 # BSPWM
 - Configuraçoes:
     Lista de monitores:            1 2 3 4 5 6 <br>
@@ -18,28 +18,26 @@
     Iosevka Nerd Font <br>
     Hack Nerd <br>
     Fantasque Sans Mono
-<br><br>
+
 # Baseado em:
-<br>
 Credits : [Stardust-kyun](https://github.com/Stardust-kyun/dotfiles)
 Credits : [Stardust-kyun](https://github.com/siduck/dotfiles)
 <br><br>
-Configuraçoes do  meu linux: <br>
+Configuraçoes do  meu linux:
 
-Instalar Python 3 <br>
+- Instalar Python 3 <br>
     localizar python: <br>
         which python <br>
-        which python3 <br>
+        which python3
 
-Comandos: <br>
+- Comandos: <br>
     sudo rm /usr/bin/python <br>
     sudo ln -s /usr/bin/python3 /usr/bin/python <br>
     sudo apt-get install python3 <br>
     sudo apt-get install python3-pip <br>
        Instalando dependencias: <br>
            sudo apt install build-essential zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev libsqlite3-dev wget libbz2-dev
-<br>
-Configuraçoes do Emacs: <br>
+- Configuraçoes do Emacs: <br>
     Emacs: <br>
         pip install pylint <br>
         pip install black <br>
