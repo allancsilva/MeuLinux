@@ -13,7 +13,7 @@
     bspc config left_padding       4 <br>
     bspc config right_padding      4 <br>
     bspc config border_width       1 <br>
-    bspc config window_gap         18 <br><br>
+    bspc config window_gap         18
 - Fontes : <br>
     Iosevka Nerd Font <br>
     Hack Nerd <br>
@@ -38,7 +38,6 @@ Configuraçoes do  meu linux:
        Instalando dependencias: <br>
            sudo apt install build-essential zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev libsqlite3-dev wget libbz2-dev
 - Configuraçoes do Emacs: <br>
-    Emacs: <br>
         pip install pylint <br>
         pip install black <br>
         pip install elpy flake8 epc isort <br>
