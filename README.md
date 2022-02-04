@@ -1,14 +1,15 @@
 # MeuLinux
 
-- Meu ambiente de trabalho e estudo
+- Meu ambiente de trabalho e estudo.
 
 # Screenshots (BSPWM)
 
 <img src= "https://raw.githubusercontent.com/allancsilva/MeuLinux/main/Screen/tela2.png">
+<img src= "https://raw.githubusercontent.com/allancsilva/MeuLinux/main/Screen/tela1.png">
 
 # BSPWM
 - Configuraçoes:
-    Lista de monitores:            1 2 3 4 5 6
+    Lista de monitores:            1 2 3 4 5 6 <br>
     bspc config top_padding        4
     bspc config bottom_padding     4
     bspc config left_padding       4
@@ -24,9 +25,9 @@
 .
 
 # Baseado em:
-[config](https://github.com/siduck/dotfiles)
 
 Credits : [Stardust-kyun](https://github.com/Stardust-kyun/dotfiles)
+Credits : [Stardust-kyun](https://github.com/siduck/dotfiles)
 
 
 
