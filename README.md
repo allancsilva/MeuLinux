@@ -20,8 +20,7 @@
     Hack Nerd <br>
     Fantasque Sans Mono
 
-<br><br>
-Configuraçoes do  meu linux:
+# Configuraçoes gerais:
 
 - Instalar Python 3 <br>
     localizar python: <br>
@@ -48,5 +47,5 @@ Configuraçoes do  meu linux:
        ;M-x company-tabnine-install-binary to install the TabNine binary for your system. <br><br>
 
 # Baseado em:
-Credits : [Stardust-kyun](https://github.com/Stardust-kyun/dotfiles)
+Credits : [Stardust-kyun](https://github.com/Stardust-kyun/dotfiles) <br>
 Credits : [Siduck](https://github.com/siduck/dotfiles)
