@@ -5,8 +5,9 @@
 # Screenshots (BSPWM)
 <img src= "https://raw.githubusercontent.com/allancsilva/MeuLinux/main/Screen/tela2.png">
 <img src= "https://raw.githubusercontent.com/allancsilva/MeuLinux/main/Screen/tela1.png">
+
 # BSPWM
-- Configuraçoes:
+- Configuraçoes:<br>
     Lista de monitores:            1 2 3 4 5 6 <br>
     bspc config top_padding        4 <br>
     bspc config bottom_padding     4 <br>
@@ -20,8 +21,8 @@
     Fantasque Sans Mono
 
 # Baseado em:
-Credits : [Stardust-kyun](https://github.com/Stardust-kyun/dotfiles)
-Credits : [Stardust-kyun](https://github.com/siduck/dotfiles)
+Credits : [Stardust-kyun](https://github.com/Stardust-kyun/dotfiles) <br>
+Credits : [Siduck](https://github.com/siduck/dotfiles)
 <br><br>
 Configuraçoes do  meu linux:
 
