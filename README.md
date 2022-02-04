@@ -20,9 +20,6 @@
     Hack Nerd <br>
     Fantasque Sans Mono
 
-# Baseado em:
-Credits : [Stardust-kyun](https://github.com/Stardust-kyun/dotfiles) <br>
-Credits : [Siduck](https://github.com/siduck/dotfiles)
 <br><br>
 Configuraçoes do  meu linux:
 
@@ -49,3 +46,7 @@ Configuraçoes do  meu linux:
         npm install -g vscode-html-languageserver-bin <br>
    Comando dentro do Emacs: <br>
        ;M-x company-tabnine-install-binary to install the TabNine binary for your system. <br><br>
+
+# Baseado em:
+Credits : [Stardust-kyun](https://github.com/Stardust-kyun/dotfiles)
+Credits : [Siduck](https://github.com/siduck/dotfiles)
