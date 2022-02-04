@@ -36,7 +36,7 @@
            sudo apt install build-essential zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev libsqlite3-dev wget libbz2-dev
 - Configuraçoes do Emacs: <br>
 		instalando as depencias de forma correta <br>
-		pip freeze > requirements.txt <br>
+		pip freeze > requirements.txt <br
 		pip install -r requirements.txt <br>
         pip install black <br>
         pip install elpy flake8 epc isort <br>

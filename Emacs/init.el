@@ -31,8 +31,9 @@
 (setq create-lockfiles nil)
 (defalias 'yes-or-no-p 'y-or-n-p)
 (setq-default cursor-type 'bar)
-(setq-default indent-tabs-mode nil)
 (setq-default tab-width 2)
+(setq python-indent-guess-indent-offset t)
+(setq python-indent-guess-indent-offset-verbose nil)
 
 ;; UTF-8
 (prefer-coding-system 'utf-8)
@@ -327,11 +328,31 @@
   )
 
 ;; Flychech
-;; pip install pylint
+;; Nao usar o Pylint !! Muito chato
 ;; npm install eslint
-(use-package flycheck
-  :ensure t
-  :init (global-flycheck-mode))
+;; npm -g install jshint
+;; npm -g install csslint
+
+(use-package flymake
+  :straight (:type built-in)
+  :hook (emacs-lisp-mode . flymake-mode)
+  :init
+  (setq python-flymake-command (executable-find "flake8"))
+  (setq flymake-fringe-indicator-position 'right-fringe)
+  )
+
+(use-package highlight-indent-guides
+  :hook (prog-mode . highlight-indent-guides-mode)
+  :init
+  (setq highlight-indent-guides-method 'character)
+  (setq highlight-indent-guides-character ?‖)
+  (setq highlight-indent-guides-responsive 'top)
+  )
+
+;; (use-package flycheck
+;;   :ensure t
+;;   :init (global-flycheck-mode))
+
 
 (use-package smartparens
   :ensure t
@@ -360,9 +381,6 @@
 (use-package cmake-ide
   :init (use-package rtags)
   :config (cmake-ide-setup))
-
-(use-package frontside-javascript
-  :init (frontside-javascript))
 
 (setq-default js-indent-level 2)
 (use-package js2-mode
@@ -396,8 +414,7 @@
 (use-package know-your-http-well
   :defer t)
 
-
-
+;;(use-package auto-rename-tag)
 
 ;; 1. Start the server with `httpd-start'
 ;; 2. Use `impatient-mode' on any buffer
@@ -407,9 +424,51 @@
 (use-package skewer-mode
   :straight t)
 
-;; pip install elpy flake8 epc isort
-(use-package pyvenv)
+;; Python aqui !!!
 
+;; (use-package py-pyment
+;;     :straight (:host github :repo "humitos/py-cmd-buffer.el")
+;;     :config
+;;     (setq py-pyment-options '("--output=numpydoc")))
+
+;; (use-package py-isort
+;;     :straight (:host github :repo "humitos/py-cmd-buffer.el")
+;;     :hook (python-mode . py-isort-enable-on-save)
+;;     :config
+;;     (setq py-isort-options '("--lines=88" "-m=3" "-tc" "-fgw=0" "-ca")))
+
+;; (use-package py-autoflake
+;;     :straight (:host github :repo "humitos/py-cmd-buffer.el")
+;;     :hook (python-mode . py-autoflake-enable-on-save)
+;;     :config
+;;     (setq py-autoflake-options '("--expand-star-imports")))
+
+
+;; instalando as depencias de forma correta
+;; pip freeze > requirements.txt
+;; pip install -r requirements.txt
+
+(setq auto-mode-alist
+      (cons '("\\.py$" . python-mode)
+       auto-mode-alist))
+(setq interpeter-mode-alist
+      (cons '("python" . python-mode)
+       interpreter-mode-alist))
+(autoload 'python-mode "python-mode" "Python editing mode." t)
+
+(use-package python-mode
+	:ensure t
+	:custom
+	(python-shell-interpreter "python3"))
+
+
+;; python3 -m pip install --user flake8
+
+(use-package python-docstring
+  :config
+  (python-docstring-install))
+
+;; pip install elpy flake8 epc isort
 ;; pip install black
 (use-package blacken
     :config
@@ -475,6 +534,13 @@
 (add-to-list 'company-transformers #'delete-dups)
 
 
+(use-package company-web
+    :straight t)
+
+(use-package company-quickhelp
+    :straight t
+    :config
+    (company-quickhelp-mode))
 
 ;; PHP linguagem Aqui
 ;; Company language package for PHP
@@ -486,20 +552,7 @@
 
 (use-package php-mode
   :defer t
-  :hook ((php-mode . (lambda () (set (make-local-variable 'company-backends)
-       '(;; list of backends
-         company-phpactor
-         company-files
-         ))))))
-
-(use-package phpactor
-  :straight (phpactor
-             :host github
-             :type git
-             :repo "emacs-php/phpactor.el"
-             :branch "master"
-             :files ("*.el" "composer.json" "composer.lock" (:exclude "*test.el"))
-             ))
+  :hook ((php-mode . (lambda () (set (make-local-variable 'company-backends))))))
 
 (use-package phpunit
   :ensure t
@@ -524,7 +577,13 @@
   :config
   (setq-default web-mode-code-indent-offset 2)
   (setq-default web-mode-markup-indent-offset 2)
-  (setq-default web-mode-attribute-indent-offset 2))
+  (setq-default web-mode-attribute-indent-offset 2)
+  (setq web-mode-tag-auto-close-style 1)
+  (setq web-mode-auto-close-style 1)
+  )
+
+
+(use-package auto-rename-tag :hook (web-mode . auto-rename-tag-mode))
 
 
 ;; Git
