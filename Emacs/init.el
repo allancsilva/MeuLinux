@@ -60,14 +60,14 @@
 (setq column-number-mode t)
 (show-paren-mode 1)
 (delete-selection-mode 1)
-(global-subword-mode 1)
+;; (global-subword-mode 1)
 
-;; Highlight whitespace.
-(setq whitespace-line-column fill-column)
-(setq whitespace-style
-      '(face lines-tail trailing tabs empty))
-(global-whitespace-mode +1)
-(add-hook 'before-save-hook 'delete-trailing-whitespace)
+;; ;; Highlight whitespace.
+;; (setq whitespace-line-column fill-column)
+;; (setq whitespace-style
+;;       '(face lines-tail trailing tabs empty))
+;; (global-whitespace-mode +1)
+;; (add-hook 'before-save-hook 'delete-trailing-whitespace)
 
 ;; Disable line numbers for some modes
 (dolist (mode '(org-mode-hook
@@ -142,41 +142,41 @@
 ; (setq-default frame-title-format "%b")
 ; (setq         frame-title-format "%b")
 
-; ----------------------------------------------------------------------------
-; Headerline
-; ----------------------------------------------------------------------------
-(defun mode-line-fill (face reserve)
-  "Return empty space using FACE and leaving RESERVE space on the right."
-  (unless reserve
-    (setq reserve 20))
-  (when (and window-system (eq 'right (get-scroll-bar-mode)))
-    (setq reserve (- reserve 3)))
-  (propertize " "
-              'display `((space :align-to (- (+ right right-fringe right-margin) ,reserve)))
-              'face face))
+; ; ----------------------------------------------------------------------------
+; ; Headerline
+; ; ----------------------------------------------------------------------------
+; (defun mode-line-fill (face reserve)
+;   "Return empty space using FACE and leaving RESERVE space on the right."
+;   (unless reserve
+;     (setq reserve 20))
+;   (when (and window-system (eq 'right (get-scroll-bar-mode)))
+;     (setq reserve (- reserve 3)))
+;   (propertize " "
+;               'display `((space :align-to (- (+ right right-fringe right-margin) ,reserve)))
+;               'face face))
 
-(setq-default header-line-format (list
-   "  "
-   'mode-line-buffer-identification
-   "   "
+; (setq-default header-line-format (list
+;    "  "
+;    'mode-line-buffer-identification
+;    "   "
 
-   'mode-line-modified
-   "   "
-   `(vc-mode vc-mode)
+;    'mode-line-modified
+;    "   "
+;    `(vc-mode vc-mode)
 
-   ;; File read-only
-   '(:eval (if buffer-read-only
-               (list (mode-line-fill 'nil 15)
-                     (propertize " [read-only] " 'face 'header-line-grey))))
+;    ;; File read-only
+;    '(:eval (if buffer-read-only
+;                (list (mode-line-fill 'nil 15)
+;                      (propertize " [read-only] " 'face 'header-line-grey))))
 
-   ;; File modified
-   '(:eval (if (buffer-modified-p)
-               (list (mode-line-fill 'nil 10)
-                     (propertize " [modified] " 'face 'header-line-red))
-             (list (mode-line-fill 'nil 10)
-                   (propertize "%4l:%3c " 'face 'header-line))))
-   ))
-(setq-default mode-line-format "")
+;    ;; File modified
+;    '(:eval (if (buffer-modified-p)
+;                (list (mode-line-fill 'nil 10)
+;                      (propertize " [modified] " 'face 'header-line-red))
+;              (list (mode-line-fill 'nil 10)
+;                    (propertize "%4l:%3c " 'face 'header-line))))
+;    ))
+; (setq-default mode-line-format "")
 
 
 ; ; ;; ----------------------------------------------------------------------------
@@ -214,6 +214,7 @@
     (persp-mode)))
 
 (use-package auto-complete
+	:diminish "🅒"
   :ensure t
   :init
   (progn
@@ -224,6 +225,7 @@
   :ensure t)
 
 (use-package page-break-lines
+	:diminish "🅑"
   :ensure t
   :init
   (global-page-break-lines-mode))
@@ -234,13 +236,19 @@
   (minions-mode))
 
 
+(use-package diminish
+  :ensure t
+  :config
+  (diminish 'eldoc-mode "🅔"))
+
 ;; Icones e Fontes
 (use-package all-the-icons
   :ensure t
   :if (display-graphic-p))
 
 (use-package editorconfig
-  :ensure t
+	:diminish "🅔"
+	:ensure t
   :config
   (editorconfig-mode 1))
 
@@ -248,24 +256,27 @@
 
 (use-package yasnippet
   :ensure t
-  :hook ((prog-mode . yas-minor-mode)
-         (conf-mode . yas-minor-mode)
-         (text-mode . yas-minor-mode)
-         (snippet-mode . yas-minor-mode)))
+  :defer t
+  :init
+  (diminish 'yas-minor-mode "🅨"))
 
 (use-package yasnippet-snippets
+	:diminish "🆈"
   :ensure t
   :after (yasnippet)
   :config (yas-global-mode 1))
 
 (use-package highlight-thing
+	:diminish "🅗"
   :ensure t
   :hook
   (prog-mode . highlight-thing-mode))
 
+
 ;; Let's Be Evil !!!
 ;; Teclas do Vim aqui
 (use-package evil
+	:diminish " 🅴"
   :ensure t
   :init
     (setq evil-want-integration t)
@@ -276,10 +287,15 @@
     (evil-set-initial-state 'dashboard-mode 'normal))
 
 (use-package evil-collection
+	:diminish "🅔"
   :after evil
   :ensure t
   :config
-    (evil-collection-init))
+	(setq evil-collection-want-unimpaired-p nil)
+	(evil-collection-init))
+
+
+
 
 (use-package evil-indent-textobject
   :ensure t)
@@ -300,6 +316,7 @@
 
 ;; visual hints while editing
 (use-package evil-goggles
+	:diminish "🅖"
   :ensure t
   :config
   (evil-goggles-use-diff-faces)
@@ -334,6 +351,7 @@
 ;; npm -g install csslint
 
 (use-package flymake
+	:diminish "🅕"
   :straight (:type built-in)
   :hook (emacs-lisp-mode . flymake-mode)
   :init
@@ -342,6 +360,7 @@
   )
 
 (use-package highlight-indent-guides
+	:diminish "🅷"
   :hook (prog-mode . highlight-indent-guides-mode)
   :init
   (setq highlight-indent-guides-method 'character)
@@ -355,6 +374,7 @@
 
 
 (use-package smartparens
+	:diminish "🅢"
   :ensure t
   :config
     (add-hook 'prog-mode-hook 'smartparens-mode))
@@ -371,6 +391,7 @@
   (setq alert-default-style 'notifications))
 
 (use-package ws-butler
+	:diminish "🅦"
   :hook ((text-mode . ws-butler-mode)
          (prog-mode . ws-butler-mode)))
 
@@ -378,18 +399,49 @@
 
 
 ;; Linguagens aqui
+;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
 (use-package cmake-ide
   :init (use-package rtags)
   :config (cmake-ide-setup))
 
-(setq-default js-indent-level 2)
+
 (use-package js2-mode
-    :mode "\\.js\\'"
-    :config
-    (setq-default js2-ignored-warnings '("msg.extra.trailing.comma")))
+  :ensure t
+  :mode (("\\.js\\'" . js2-mode)
+         ;; ("components?\\/.*\\.jsx?\\'" . js2-jsx-mode)
+         )
+  :interpreter ("node" . js2-jsx-mode)
+  :init
+  (add-hook 'js2-mode-hook
+            (lambda ()
+              (setq js2-basic-offset 2)
+              ;; (add-hook 'xref-backend-functions #'xref-js2-xref-backend nil t)
+              )))
+
+(use-package js2-refactor
+  :ensure t
+  :defer t)
+
+
+(use-package prettier-js
+	:diminish "🅟"
+  :ensure t
+  :defer t
+  :hook
+  ((js2-mode js-mode css-mode scss-mode graphql-mode web-mode) . prettier-js-mode))
+
+
+(setq-default js-indent-level 2)
+; (use-package js2-mode
+;     :mode "\\.js\\'"
+;     :config
+;     (setq-default js2-ignored-warnings '("msg.extra.trailing.comma")))
 
 (use-package apheleia
-  :config
+	:diminish "🅰"
+	:config
   (apheleia-global-mode +1))
 
 (use-package markdown-mode
@@ -457,6 +509,7 @@
 (autoload 'python-mode "python-mode" "Python editing mode." t)
 
 (use-package python-mode
+	:diminish "🅟"
 	:ensure t
 	:custom
 	(python-shell-interpreter "python3"))
@@ -477,6 +530,7 @@
 
 ;; Tabnine, cuidado muito hack aqui !!! kkkkkk
 (use-package company
+	:diminish "🅐"
   :config
     (global-company-mode)
   :custom
@@ -583,7 +637,9 @@
   )
 
 
-(use-package auto-rename-tag :hook (web-mode . auto-rename-tag-mode))
+(use-package auto-rename-tag
+	:diminish "🅰"
+	:hook (web-mode . auto-rename-tag-mode))
 
 
 ;; Git
@@ -721,16 +777,41 @@
 ; ;; Pra usa-lo primeiro e preciso desabilitar o nano-emacs la em cima
 ; ;; Comente as linhas do nano-emacs e descomente essas aqui
 
-(use-package chocolate-theme
-  :ensure t
-  :config
-  (load-theme 'chocolate t))
+; (use-package chocolate-theme
+;   :ensure t
+;   :config
+;   (load-theme 'chocolate t))
+; (use-package flatland-theme      
+;   :ensure t
+;   :config (load-theme 'flatland t))
+; (use-package afternoon-theme
+;   :ensure t     
+;   :config (load-theme 'afternoon t))
+; (use-package badger-theme
+;   :ensure t        
+;   :config (load-theme 'badger t))
+(use-package dracula-theme
+  :ensure t       
+  :config (load-theme 'dracula t))
+; (use-package gruvbox-theme
+;   :ensure t       
+;   :config (load-theme 'gruvbox t))
+; (use-package nord-theme
+;   :ensure t          
+;   :config (load-theme 'nord t))
+; (use-package night-owl-theme
+;   :ensure t     
+;   :config (load-theme 'night-owl t))
+; (use-package gruber-darker-theme
+;   :ensure t 
+;   :config (load-theme 'gruber-darker t))
 
-; ; ;; Temas do Emacs : O kaolin oferece muitos temas
-; ; (use-package kaolin-themes
-; ;   :config
-; ;   (load-theme 'kaolin-bubblegum t)
-; ;   (kaolin-treemacs-theme))
+
+;; Temas do Emacs : O kaolin oferece muitos temas
+; (use-package kaolin-themes
+;   :config
+;   (load-theme 'kaolin-eclipse t)
+;   (kaolin-treemacs-theme))
 
 ; ;; ;; ;; Temas kaolin
 ; ;; ;; kaolin-dark - a dark jade variant inspired by Sierra.vim
@@ -745,14 +826,29 @@
 ; ;; ;; kaolin-valley-light - light variant of kaolin-valley theme.
 
 
-
 (use-package spaceline
+  :if window-system
   :ensure t
-  :init (setq powerline-height 24
-              spaceline-highlight-face-func 'spaceline-highlight-face-evil-state
-              powerline-default-separator 'arrow)
+  :defer t
+  :init
+  (setq-default powerline-image-apple-rgb nil)
+	(setq powerline-height 24
+        spaceline-highlight-face-func 'spaceline-highlight-face-evil-state
+        powerline-default-separator 'arrow)
+	(setq-default spaceline-window-numbers-unicode t)
+  (setq-default spaceline-minor-modes-separator " ")
+  (require 'spaceline-config)
   :config
-  (spaceline-spacemacs-theme))
+  (spaceline-spacemacs-theme)
+  (spaceline-toggle-buffer-size-off)
+  (spaceline-toggle-hud-off))
+
+
+; (use-package spaceline
+;   :ensure t
+;   :init
+;   :config
+;   (spaceline-spacemacs-theme))
 
 
 ;; Atalhos proprios
