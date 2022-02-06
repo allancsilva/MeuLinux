@@ -47,27 +47,19 @@
 (setq read-buffer-completion-ignore-case t)
 (setq read-file-name-completion-ignore-case t)
 
-; ;; Make frame transparency overridable
-(defvar efs/frame-transparency '(90 . 90))
+;; ; ;; Make frame transparency overridable
+;; (defvar efs/frame-transparency '(90 . 90))
 
-;; Set frame transparency
-(set-frame-parameter (selected-frame) 'alpha efs/frame-transparency)
-(add-to-list 'default-frame-alist `(alpha . ,efs/frame-transparency))
-(set-frame-parameter (selected-frame) 'fullscreen 'maximized)
-(add-to-list 'default-frame-alist '(fullscreen . maximized))
+;; ;; Set frame transparency
+;; (set-frame-parameter (selected-frame) 'alpha efs/frame-transparency)
+;; (add-to-list 'default-frame-alist `(alpha . ,efs/frame-transparency))
+;; (set-frame-parameter (selected-frame) 'fullscreen 'maximized)
+;; (add-to-list 'default-frame-alist '(fullscreen . maximized))
 
 ;; Global minor modes
 (setq column-number-mode t)
 (show-paren-mode 1)
 (delete-selection-mode 1)
-;; (global-subword-mode 1)
-
-;; ;; Highlight whitespace.
-;; (setq whitespace-line-column fill-column)
-;; (setq whitespace-style
-;;       '(face lines-tail trailing tabs empty))
-;; (global-whitespace-mode +1)
-;; (add-hook 'before-save-hook 'delete-trailing-whitespace)
 
 ;; Disable line numbers for some modes
 (dolist (mode '(org-mode-hook
@@ -80,15 +72,6 @@
 
 ;; The default is 800 kilobytes.  Measured in bytes.
 (setq gc-cons-threshold (* 50 1000 1000))
-
-;; Profile emacs startup
-(add-hook 'emacs-startup-hook
-          (lambda ()
-            (message "*** Emacs loaded in %s with %d garbage collections."
-                     (format "%.2f seconds"
-                             (float-time
-                              (time-subtract after-init-time before-init-time)))
-                     gcs-done)))
 
 
 ;; Aqui o Straigth el que funciona que nem o Package do Melpa
@@ -142,42 +125,6 @@
 ; (setq-default frame-title-format "%b")
 ; (setq         frame-title-format "%b")
 
-; ; ----------------------------------------------------------------------------
-; ; Headerline
-; ; ----------------------------------------------------------------------------
-; (defun mode-line-fill (face reserve)
-;   "Return empty space using FACE and leaving RESERVE space on the right."
-;   (unless reserve
-;     (setq reserve 20))
-;   (when (and window-system (eq 'right (get-scroll-bar-mode)))
-;     (setq reserve (- reserve 3)))
-;   (propertize " "
-;               'display `((space :align-to (- (+ right right-fringe right-margin) ,reserve)))
-;               'face face))
-
-; (setq-default header-line-format (list
-;    "  "
-;    'mode-line-buffer-identification
-;    "   "
-
-;    'mode-line-modified
-;    "   "
-;    `(vc-mode vc-mode)
-
-;    ;; File read-only
-;    '(:eval (if buffer-read-only
-;                (list (mode-line-fill 'nil 15)
-;                      (propertize " [read-only] " 'face 'header-line-grey))))
-
-;    ;; File modified
-;    '(:eval (if (buffer-modified-p)
-;                (list (mode-line-fill 'nil 10)
-;                      (propertize " [modified] " 'face 'header-line-red))
-;              (list (mode-line-fill 'nil 10)
-;                    (propertize "%4l:%3c " 'face 'header-line))))
-;    ))
-; (setq-default mode-line-format "")
-
 
 ; ; ;; ----------------------------------------------------------------------------
 ; ; ;; Font
@@ -193,6 +140,80 @@
 
 
 ; ;; Pacotes começam aqui !!
+
+
+(use-package dashboard
+  :ensure t
+  :defer nil
+  :config
+  (dashboard-setup-startup-hook)
+  (setq dashboard-items '((recents . 12)))
+  (setq dashboard-banner-logo-title "🅔 ​ 🅜 ​ 🅐 ​ 🅒 ​ 🅢 - Show Me The Code!")
+  (setq dashboard-startup-banner "~/.emacs.d/skull.png")
+  (setq dashboard-center-content t)
+  (setq dashboard-show-shortcuts nil)
+  (setq dashboard-set-init-info t)
+  (setq dashboard-init-info (format "%d packages loaded in %s"
+                                    (length package-activated-list) (emacs-init-time)))
+  (setq dashboard-set-footer nil)
+  (setq dashboard-set-navigator t)
+)
+
+
+
+  ;; (defun update-config ()
+  ;;   "Update Witchmacs to the latest version."
+  ;;   (interactive)
+  ;;   (let ((dir (expand-file-name user-emacs-directory)))
+  ;;     (if (file-exists-p dir)
+  ;;         (progn
+  ;;           (message "Witchmacs is updating!")
+  ;;           (cd dir)
+  ;;           (shell-command "git pull")
+  ;;           (message "Update finished. Switch to the messages buffer to see changes and then restart Emacs"))
+
+
+  ;; (setq dashboard-navigator-buttons
+  ;;       `(;; line1
+  ;;         ((,nil
+  ;;           "Witchmacs on github"
+  ;;           "Open Witchmacs' github page on your browser"
+  ;;           (lambda (&rest _) (browse-url "https://github.com/snackon/witchmacs"))
+  ;;           'default)
+  ;;          (nil
+  ;;           "Witchmacs crash course"
+  ;;           "Open Witchmacs' introduction to Emacs"
+  ;;           (lambda (&rest _) (find-file "~/.emacs.d/Witcheat.org"))
+  ;;           'default)
+  ;;          (nil
+  ;;           "Update Witchmacs"
+  ;;           "Get the latest Witchmacs update. Check out the github commits for changes!"
+  ;;           (lambda (&rest _) (update-config))
+  ;;           'default)
+  ;;          )
+  ;;         ;; line 2
+  ;;         ((,nil
+  ;;           "Open scratch buffer"
+  ;;           "Switch to the scratch buffer"
+  ;;           (lambda (&rest _) (create-scratch-buffer))
+  ;;           'default)
+  ;;          (nil
+  ;;           "Open config.org"
+  ;;           "Open Witchmacs' configuration file for easy editing"
+  ;;           (lambda (&rest _) (find-file "~/.emacs.d/config.org"))
+  ;;           'default)))))
+
+
+
+(use-package projectile
+	:diminish "🅟"
+  :ensure t
+  :config
+  (projectile-mode +1)
+  (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+  (setq projectile-enable-caching t)
+  (projectile-mode))
+
 
 (use-package which-key
   :init (which-key-mode)
@@ -368,10 +389,6 @@
   (setq highlight-indent-guides-responsive 'top)
   )
 
-;; (use-package flycheck
-;;   :ensure t
-;;   :init (global-flycheck-mode))
-
 
 (use-package smartparens
 	:diminish "🅢"
@@ -478,52 +495,37 @@
 
 ;; Python aqui !!!
 
-;; (use-package py-pyment
-;;     :straight (:host github :repo "humitos/py-cmd-buffer.el")
-;;     :config
-;;     (setq py-pyment-options '("--output=numpydoc")))
-
-;; (use-package py-isort
-;;     :straight (:host github :repo "humitos/py-cmd-buffer.el")
-;;     :hook (python-mode . py-isort-enable-on-save)
-;;     :config
-;;     (setq py-isort-options '("--lines=88" "-m=3" "-tc" "-fgw=0" "-ca")))
-
-;; (use-package py-autoflake
-;;     :straight (:host github :repo "humitos/py-cmd-buffer.el")
-;;     :hook (python-mode . py-autoflake-enable-on-save)
-;;     :config
-;;     (setq py-autoflake-options '("--expand-star-imports")))
-
-
+;; Tabnine instalar server Jedi e o Anakin
 ;; instalando as depencias de forma correta
 ;; pip freeze > requirements.txt
 ;; pip install -r requirements.txt
 
-(setq auto-mode-alist
-      (cons '("\\.py$" . python-mode)
-       auto-mode-alist))
-(setq interpeter-mode-alist
-      (cons '("python" . python-mode)
-       interpreter-mode-alist))
-(autoload 'python-mode "python-mode" "Python editing mode." t)
 
 (use-package python-mode
 	:diminish "🅟"
 	:ensure t
 	:custom
-	(python-shell-interpreter "python3"))
-
+	(python-shell-interpreter "python3")
+  :config
+  (setq auto-mode-alist
+        (cons '("\\.py$" . python-mode)
+         auto-mode-alist))
+  (setq interpreter-mode-alist
+        (cons '("python" . python-mode)
+         interpreter-mode-alist))
+  (autoload 'python-mode "python-mode" "Python editing mode." t))
 
 ;; python3 -m pip install --user flake8
 
 (use-package python-docstring
+  :diminish "🅳"
   :config
   (python-docstring-install))
 
 ;; pip install elpy flake8 epc isort
 ;; pip install black
 (use-package blacken
+    :diminish "🅱"
     :config
     (add-hook 'python-mode-hook 'blacken-mode))
 
@@ -638,19 +640,96 @@
 
 
 (use-package auto-rename-tag
-	:diminish "🅰"
+	:diminish "🅣"
 	:hook (web-mode . auto-rename-tag-mode))
 
 
 ;; Git
 (use-package magit
-    :bind ("C-x g" . magit-status))
+  :bind ("C-x g" . magit-status))
+
+(use-package git-commit
+  :custom
+  (git-commit-fill-column 78)
+  (git-commit-style-convention-checks '(non-empty-second-line overlong-summary-line)))
+
+(use-package magit-filenotify)
+(use-package magit-find-file)
 
 (use-package git-gutter
-  :ensure t
-  :if (not window-system)
+  :straight git-gutter-fringe
+  :diminish
+  :hook ((text-mode . git-gutter-mode)
+         (prog-mode . git-gutter-mode))
   :config
-  (global-git-gutter-mode 1))
+	(global-git-gutter-mode 1)
+  (setq git-gutter:update-interval 2)
+    (require 'git-gutter-fringe)
+    (set-face-foreground 'git-gutter-fr:added "LightGreen")
+    (fringe-helper-define 'git-gutter-fr:added nil
+      "XXXXXXXXXX"
+      "XXXXXXXXXX"
+      "XXXXXXXXXX"
+      ".........."
+      ".........."
+      "XXXXXXXXXX"
+      "XXXXXXXXXX"
+      "XXXXXXXXXX"
+      ".........."
+      ".........."
+      "XXXXXXXXXX"
+      "XXXXXXXXXX"
+      "XXXXXXXXXX")
+
+    (set-face-foreground 'git-gutter-fr:modified "LightGoldenrod")
+    (fringe-helper-define 'git-gutter-fr:modified nil
+      "XXXXXXXXXX"
+      "XXXXXXXXXX"
+      "XXXXXXXXXX"
+      ".........."
+      ".........."
+      "XXXXXXXXXX"
+      "XXXXXXXXXX"
+      "XXXXXXXXXX"
+      ".........."
+      ".........."
+      "XXXXXXXXXX"
+      "XXXXXXXXXX"
+      "XXXXXXXXXX")
+
+    (set-face-foreground 'git-gutter-fr:deleted "LightCoral")
+    (fringe-helper-define 'git-gutter-fr:deleted nil
+      "XXXXXXXXXX"
+      "XXXXXXXXXX"
+      "XXXXXXXXXX"
+      ".........."
+      ".........."
+      "XXXXXXXXXX"
+      "XXXXXXXXXX"
+      "XXXXXXXXXX"
+      ".........."
+      ".........."
+      "XXXXXXXXXX"
+      "XXXXXXXXXX"
+      "XXXXXXXXXX")
+
+  ;; These characters are used in terminal mode
+  (setq git-gutter:modified-sign "≡")
+  (setq git-gutter:added-sign "≡")
+  (setq git-gutter:deleted-sign "≡")
+  (set-face-foreground 'git-gutter:added "LightGreen")
+  (set-face-foreground 'git-gutter:modified "LightGoldenrod")
+  (set-face-foreground 'git-gutter:deleted "LightCoral")
+	(global-git-gutter-mode 1))
+
+
+
+(use-package git-link
+  :commands git-link
+  :config
+  (setq git-link-open-in-browser t)
+  (dw/leader-key-def
+    "gL"  'git-link))
 
 
 ;; Outros
@@ -729,8 +808,6 @@
 
 (use-package wgrep)
 
-
-
 (use-package prescient
   :after counsel
   :config
@@ -741,14 +818,24 @@
   :config
   (ivy-prescient-mode 1))
 
-;; (dw/leader-key-def
-;;   "r"   '(ivy-resume :which-key "ivy resume")
-;;   "f"   '(:ignore t :which-key "files")
-;;   "ff"  '(counsel-find-file :which-key "open file")
-;;   "C-f" 'counsel-find-file
-;;   "fr"  '(counsel-recentf :which-key "recent files")
-;;   "fR"  '(revert-buffer :which-key "revert file")
-;;   "fj"  '(counsel-file-jump :which-key "jump to file"))
+
+(use-package vertico
+  :straight '(vertico :host github
+                      :repo "minad/vertico"
+                      :branch "main")
+  :bind (:map vertico-map
+         ("C-j" . vertico-next)
+         ("C-k" . vertico-previous)
+         ("C-f" . vertico-exit)
+         :map minibuffer-local-map
+         ("M-h" . dw/minibuffer-backward-kill))
+  :custom
+  (vertico-cycle t)
+  :custom-face
+  (vertico-current ((t (:background "#3a3f5a"))))
+  :init
+  (vertico-mode))
+
 
 (use-package marginalia
   :after vertico
@@ -758,19 +845,6 @@
   :init
   (marginalia-mode))
 
-(use-package embark
-  :straight t
-  :bind (("C-S-a" . embark-act)
-         :map minibuffer-local-map
-         ("C-d" . embark-act))
-  :config
-
-  ;; Show Embark actions via which-key
-  (setq embark-action-indicator
-        (lambda (map)
-          (which-key--show-keymap "Embark" map nil nil 'no-paging)
-          #'which-key--hide-popup-ignore-command)
-        embark-become-indicator embark-action-indicator))
 
 
 ; ;; Tema do Emacs
@@ -781,49 +855,30 @@
 ;   :ensure t
 ;   :config
 ;   (load-theme 'chocolate t))
-; (use-package flatland-theme      
+; (use-package flatland-theme
 ;   :ensure t
 ;   :config (load-theme 'flatland t))
 ; (use-package afternoon-theme
-;   :ensure t     
+;   :ensure t
 ;   :config (load-theme 'afternoon t))
 ; (use-package badger-theme
-;   :ensure t        
+;   :ensure t
 ;   :config (load-theme 'badger t))
 (use-package dracula-theme
-  :ensure t       
+  :ensure t
   :config (load-theme 'dracula t))
 ; (use-package gruvbox-theme
-;   :ensure t       
+;   :ensure t
 ;   :config (load-theme 'gruvbox t))
 ; (use-package nord-theme
-;   :ensure t          
+;   :ensure t
 ;   :config (load-theme 'nord t))
 ; (use-package night-owl-theme
-;   :ensure t     
+;   :ensure t
 ;   :config (load-theme 'night-owl t))
 ; (use-package gruber-darker-theme
-;   :ensure t 
+;   :ensure t
 ;   :config (load-theme 'gruber-darker t))
-
-
-;; Temas do Emacs : O kaolin oferece muitos temas
-; (use-package kaolin-themes
-;   :config
-;   (load-theme 'kaolin-eclipse t)
-;   (kaolin-treemacs-theme))
-
-; ;; ;; ;; Temas kaolin
-; ;; ;; kaolin-dark - a dark jade variant inspired by Sierra.vim
-; ;; ;; kaolin-light - light variant of the original kaolin-dark.
-; ;; ;; kaolin-aurora - Kaolin meets polar lights.
-; ;; ;; kaolin-bubblegum - Kaolin colorful theme with dark blue background.
-; ;; ;; kaolin-eclipse - a dark purple variant
-; ;; ;; kaolin-galaxy - bright theme based on one of the Sebastian Andaur arts.
-; ;; ;; kaolin-ocean - a dark blue variant.
-; ;; ;; kaolin-temple - dark background with syntax highlighting focus on blue, green and pink shades
-; ;; ;; kaolin-valley-dark - colorful Kaolin theme with brown background.
-; ;; ;; kaolin-valley-light - light variant of kaolin-valley theme.
 
 
 (use-package spaceline
@@ -834,7 +889,7 @@
   (setq-default powerline-image-apple-rgb nil)
 	(setq powerline-height 24
         spaceline-highlight-face-func 'spaceline-highlight-face-evil-state
-        powerline-default-separator 'arrow)
+        powerline-default-separator 'wave)
 	(setq-default spaceline-window-numbers-unicode t)
   (setq-default spaceline-minor-modes-separator " ")
   (require 'spaceline-config)
@@ -842,13 +897,8 @@
   (spaceline-spacemacs-theme)
   (spaceline-toggle-buffer-size-off)
   (spaceline-toggle-hud-off))
+;; types are: 'slant, 'arrow, 'cup, 'wave, 'none
 
-
-; (use-package spaceline
-;   :ensure t
-;   :init
-;   :config
-;   (spaceline-spacemacs-theme))
 
 
 ;; Atalhos proprios
