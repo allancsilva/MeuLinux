@@ -73,6 +73,10 @@
 ;; The default is 800 kilobytes.  Measured in bytes.
 (setq gc-cons-threshold (* 50 1000 1000))
 
+;; remover a mensagem de erro
+;; ad-handle-definition: ‘hippie-expand’ got redefined
+(setq ad-redefinition-action 'accept)
+
 
 ;; Aqui o Straigth el que funciona que nem o Package do Melpa
 (defvar bootstrap-version)
@@ -147,16 +151,19 @@
   :defer nil
   :config
   (dashboard-setup-startup-hook)
-  (setq dashboard-items '((recents . 12)))
+  (setq dashboard-items '((recents . 4)
+													(bookmarks . 2)
+													(projects . 2)))
   (setq dashboard-banner-logo-title "🅔 ​ 🅜 ​ 🅐 ​ 🅒 ​ 🅢 - Show Me The Code!")
   (setq dashboard-startup-banner "~/.emacs.d/skull.png")
   (setq dashboard-center-content t)
-  (setq dashboard-show-shortcuts nil)
+  (setq dashboard-show-shortcuts t)
   (setq dashboard-set-init-info t)
   (setq dashboard-init-info (format "%d packages loaded in %s"
                                     (length package-activated-list) (emacs-init-time)))
   (setq dashboard-set-footer nil)
   (setq dashboard-set-navigator t)
+	(setq dashboard-set-heading-icons t)
 )
 
 
