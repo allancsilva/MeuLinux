@@ -27,12 +27,15 @@
 (set-default 'cursor-type  '(bar . 1))
 (blink-cursor-mode 0)
 (setq-default line-spacing 0)
+(setq scroll-preserve-screen-position t)
 (setq widget-image-enable nil)
 (setq visible-bell t)
 (setq ring-bell-function 'ignore)
 (show-paren-mode t)
 (setq evil-want-keybinding nil)
 (setq show-paren-style 'expression)
+
+(setq w! "uUuuuuuUUUuuuummmMMMmmmm.  This ain't vim.")
 
 ;; (set-face-font 'default "Hack 12")
 (setq default-frame-alist
@@ -107,22 +110,31 @@
   (package-install 'use-package))
 
 
-;; Tema
+;; Temas
+;; (use-package moe-theme
+;;   :init
+;;   (setq moe-theme-highlight-buffer-id t)
+;;   :config
+;;   (emagician/defhook update-moe-color midnight-hook
+;;     (moe-theme-set-color (emagician/get-moe-color-for-day))
+;;     (emagician/powerline-theme))
+;;   (moe-theme-set-color (emagician/get-moe-color-for-day))
+;;   (moe-dark)
+;;   (powerline-moe-theme)
+;;   (emagician/powerline-theme)
+;;   (powerline-reset)
+;; )
+
 ;; (straight-use-package '(nano-theme :type git :host github
 ;;                                    :repo "rougier/nano-theme"))
 ;; (require 'nano-theme)
 ;; (nano-mode) (nano-dark)
 
-;; (use-package chocolate-theme
-;;    :ensure t
-;;    :config
-;;    (load-theme 'chocolate t))
+(use-package chocolate-theme
+   :ensure t
+   :config
+   (load-theme 'chocolate t))
 
-;; GruvBox
-(straight-use-package 'gruvbox-theme)
-;; Mode line (this might be slow because of the "☰" that requires substitution)
-;; This line below makes things a bit faster
-;; (set-fontset-font "fontset-default"  '(#x2600 . #x26ff) "Fira Code 14")
 
 (define-key mode-line-major-mode-keymap [header-line]
   (lookup-key mode-line-major-mode-keymap [mode-line]))
@@ -194,19 +206,9 @@
   :init
   (minions-mode))
 
-(use-package page-break-lines
-  :ensure t
-  :init
-  (global-page-break-lines-mode))
-
 (use-package all-the-icons
   :ensure t
   :if (display-graphic-p))
-
-(use-package editorconfig
-	:ensure t
-  :config
-  (editorconfig-mode 1))
 
 (straight-use-package 'yasnippet)
 (straight-use-package 'yasnippet-snippets)
@@ -217,18 +219,26 @@
   :after (yasnippet)
   :config (yas-global-mode 1))
 
+(use-package show-marks
+  :ensure t)
+
+(use-package volatile-highlights
+  :diminish ""
+  :ensure t
+  :config
+  (volatile-highlights-mode t))  
+
 (use-package highlight-thing
   :ensure t
   :hook
   (prog-mode . highlight-thing-mode))
 
-  (use-package highlight-indent-guides
+(use-package highlight-indent-guides
   :hook (prog-mode . highlight-indent-guides-mode)
   :init
   (setq highlight-indent-guides-method 'character)
   (setq highlight-indent-guides-character ?‖)
   (setq highlight-indent-guides-responsive 'top))
-
 
 (use-package smartparens
   :ensure t
@@ -240,15 +250,6 @@
   (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
   (add-hook 'geiser-repl-mode-hook 'rainbow-delimiters-mode)
   (add-hook 'cider-repl-mode-hook 'rainbow-delimiters-mode))
-
-(use-package alert
-  :commands alert
-  :config
-  (setq alert-default-style 'notifications))
-
-(use-package ws-butler
-  :hook ((text-mode . ws-butler-mode)
-         (prog-mode . ws-butler-mode)))
 
 (use-package transpose-frame)
 
@@ -270,8 +271,7 @@
             (lambda (&rest _) (setq mode-line-format nil)))
 
   (add-hook 'neo-after-create-hook
-            (lambda (&rest _) (setq header-line-format nil)))
-  )
+            (lambda (&rest _) (setq header-line-format nil))))
 
 ;; Git 
 (straight-use-package 'magit)
@@ -282,69 +282,11 @@
 
 (use-package git-gutter
   :straight git-gutter-fringe
-  :diminish
   :hook ((text-mode . git-gutter-mode)
          (prog-mode . git-gutter-mode))
   :config
 	(global-git-gutter-mode 1)
-  (setq git-gutter:update-interval 2)
-    (require 'git-gutter-fringe)
-    (set-face-foreground 'git-gutter-fr:added "LightGreen")
-    (fringe-helper-define 'git-gutter-fr:added nil
-      "XXXXXXXXXX"
-      "XXXXXXXXXX"
-      "XXXXXXXXXX"
-      ".........."
-      ".........."
-      "XXXXXXXXXX"
-      "XXXXXXXXXX"
-      "XXXXXXXXXX"
-      ".........."
-      ".........."
-      "XXXXXXXXXX"
-      "XXXXXXXXXX"
-      "XXXXXXXXXX")
-
-    (set-face-foreground 'git-gutter-fr:modified "LightGoldenrod")
-    (fringe-helper-define 'git-gutter-fr:modified nil
-      "XXXXXXXXXX"
-      "XXXXXXXXXX"
-      "XXXXXXXXXX"
-      ".........."
-      ".........."
-      "XXXXXXXXXX"
-      "XXXXXXXXXX"
-      "XXXXXXXXXX"
-      ".........."
-      ".........."
-      "XXXXXXXXXX"
-      "XXXXXXXXXX"
-      "XXXXXXXXXX")
-
-    (set-face-foreground 'git-gutter-fr:deleted "LightCoral")
-    (fringe-helper-define 'git-gutter-fr:deleted nil
-      "XXXXXXXXXX"
-      "XXXXXXXXXX"
-      "XXXXXXXXXX"
-      ".........."
-      ".........."
-      "XXXXXXXXXX"
-      "XXXXXXXXXX"
-      "XXXXXXXXXX"
-      ".........."
-      ".........."
-      "XXXXXXXXXX"
-      "XXXXXXXXXX"
-      "XXXXXXXXXX")
-
-  ;; These characters are used in terminal mode
-  (setq git-gutter:modified-sign "▓")
-  (setq git-gutter:added-sign "█")
-  (setq git-gutter:deleted-sign "░")
-  (set-face-foreground 'git-gutter:added "LightGreen")
-  (set-face-foreground 'git-gutter:modified "LightGoldenrod")
-  (set-face-foreground 'git-gutter:deleted "LightCoral")
-	(global-git-gutter-mode 1))
+  (setq git-gutter:update-interval 2))
 
 ;; Outros
 (use-package hydra
@@ -432,7 +374,6 @@
   :config
   (ivy-prescient-mode 1))
 
-
 (use-package vertico
   :straight '(vertico :host github
                       :repo "minad/vertico"
@@ -450,7 +391,6 @@
   :init
   (vertico-mode))
 
-
 (use-package marginalia
   :after vertico
   :straight t
@@ -460,6 +400,52 @@
   (marginalia-mode))
 
 ;; Linguagens aqui
+
+(use-package company
+  :init (add-hook 'after-init-hook 'global-company-mode)
+  :config
+  (global-company-mode 1)
+  :bind (:map company-active-map  
+            ("<tab>" . company-complete-selection))
+  :bind (:map company-search-map
+            ("C-n" . company-select-next)
+            ("C-p" . company-select-previous)))
+
+;Run M-x company-tabnine-install-binary to install the TabNine binary for your system.
+(use-package company-tabnine
+  :config
+  (add-to-list 'company-backends #'company-tabnine)
+  (setq company-idle-delay 0.05)
+  (setq company-show-numbers t)
+  (company-tng-configure-default)
+  (setq company-backends
+      '(
+        (company-tabnine :separate company-dabbrev company-keywords company-files company-ispell company-capf)
+        ))
+  (setq company-frontends
+        '(company-tng-frontend
+          company-pseudo-tooltip-frontend
+          company-echo-metadata-frontend)))
+
+(defvar company-mode/enable-yas t
+  "Enable yasnippet for all backends.")
+
+(defun company-mode/backend-with-yas (backend)
+  (if (or (not company-mode/enable-yas) (and (listp backend) (member 'company-yasnippet backend)))
+      backend
+    (append (if (consp backend) backend (list backend))
+            '(:with company-yasnippet))))
+
+(setq company-backends (mapcar #'company-mode/backend-with-yas company-backends))
+
+;; Add `company-elisp' backend for elisp.
+(add-hook 'emacs-lisp-mode-hook
+          #'(lambda ()
+              (require 'company-elisp)
+              (push 'company-elisp company-backends)))
+
+;; Remove duplicate candidate.
+(add-to-list 'company-transformers #'delete-dups)
 
 (use-package php-mode
   :defer t
@@ -486,6 +472,8 @@
   (add-to-list 'auto-mode-alist '("\\.tsx\\'" . web-mode))
   (add-to-list 'auto-mode-alist '("\\.jsx\\'" . web-mode))
   :config
+  (setq web-mode-enable-current-element-highlight t)
+  (setq web-mode-enable-current-column-highlight t)   
   (setq-default web-mode-code-indent-offset 2)
   (setq-default web-mode-markup-indent-offset 2)
   (setq-default web-mode-attribute-indent-offset 2)
@@ -495,6 +483,7 @@
 (use-package auto-rename-tag
 	:hook (web-mode . auto-rename-tag-mode))
 
+(setq-default js-indent-level 2)
 (use-package js2-mode
   :ensure t
   :mode (("\\.js\\'" . js2-mode)
@@ -508,18 +497,11 @@
               ;; (add-hook 'xref-backend-functions #'xref-js2-xref-backend nil t)
               )))
 
-(use-package js2-refactor
-  :ensure t
-  :defer t)
-
-
 (use-package prettier-js
   :ensure t
   :defer t
   :hook
   ((js2-mode js-mode css-mode scss-mode graphql-mode web-mode) . prettier-js-mode))
-
-(setq-default js-indent-level 2)
 
 (use-package markdown-mode
    :commands (markdown-mode gfm-mode)
@@ -533,22 +515,6 @@
   :hook (typescript-mode . lsp-deferred)
   :config
   (setq typescript-indent-level 2))
-
-(use-package rust-mode)
-
-(use-package know-your-http-well
-  :defer t)
-
-;;(use-package auto-rename-tag)
-
-;; 1. Start the server with `httpd-start'
-;; 2. Use `impatient-mode' on any buffer
-(use-package impatient-mode
-  :straight t)
-
-(use-package skewer-mode
-  :straight t)
-
 
 ;; Atalhos proprios
 
