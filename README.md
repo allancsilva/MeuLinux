@@ -33,6 +33,7 @@
     sudo apt-get install python3 <br>
     sudo apt-get install python3-pip <br>
     sudo apt-get install libqt5x11extras5 <br>
+    sudo apt install fuse libfuse2 <br>
        Instalando dependencias: <br>
            sudo apt install build-essential zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev libsqlite3-dev wget libbz2-dev
 - Configuraçoes do Emacs: <br>
